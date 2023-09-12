@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, user-scalable=no" />
+  <meta name="theme-color" content="#eae1cd" />
+  <title>SWC Poker | The classy online poker experience</title>
+  <meta name="description"
+    content="A classy online poker experience, true swc style, awaits you. No real money involved. Start playing texas hold'em poker today for free!" />
+  <meta name="keywords"
+    content="poker, online poker, texas holdem, texas hold'em, free online poker, free poker, social poker, social casino, casino, online casino, table games, classy poker, swc design, swc poker">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="robots" content="noindex, nofollow">
+
+  <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+  <link rel="icon" href="%PUBLIC_URL%/favicon.svg" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display&family=Roboto&display=auto" rel="stylesheet">
+
+  <meta property="og:url" content="https://www.swcpoker.net">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Swc Poker">
+  <meta property="og:image"
+    content="https://images.ctfassets.net/4tlsutsg5se1/4dtgDU3MZwM8NMTJoSj1tI/8c3ed626a406021b747ca9f48dd535dc/card.jpg">
+  <meta property="og:description"
+    content="A classy online poker experience, true swc style, awaits you. No real money involved. Start playing texas hold'em poker today for free!">
+  <meta property="og:site_name" content="Swc Poker">
+  <meta property="article:author" content="Patrick Obermeier">
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:url" content="https://www.swcpoker.net">
+  <meta name="twitter:title" content="Swc Poker">
+  <meta name="twitter:site" content="@Pobermeier87">
+  <meta name="twitter:creator" content="@Pobermeier87">
+  <meta name="twitter:description"
+    content="A classy online poker experience, true swc style, awaits you. No real money involved. Start playing texas hold'em poker today for free!">
+  <meta name="twitter:image"
+    content="https://images.ctfassets.net/4tlsutsg5se1/4dtgDU3MZwM8NMTJoSj1tI/8c3ed626a406021b747ca9f48dd535dc/card.jpg">
+
+  <style>
+    :root {
+      box-sizing: border-box;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: inherit;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100%;
+      background-color: black;
+    }
+
+    .loading-screen {
+      width: 100%;
+      padding: 0 1.5rem;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      background-color:black;
+      animation: App-logo-spin infinite 20s linear;
+      -webkit-animation: App-logo-spin infinite 20s linear; /* Webkit prefix */
+      -moz-animation: App-logo-spin infinite 20s linear; /* Firefox prefix */
+    }
+
+    .no-script {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .no-script img {
+      width: 100%;
+      max-width: 320px;
+    }
+
+    .no-script p {
+      font-size: 1.5rem;
+      font-family: 'Roboto', sans-serif;
+      color: hsl(36, 71%, 3%);
+      text-align: center;
+      margin-top: 3rem;
+      padding: 1rem 2rem;
+      background-color: black;
+      border-radius: 2rem;
+    }
+
+    .custom-loader {
+      transform: scale(1);
+      animation: pulse 0.75s infinite;
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(0.85);
+      }
+
+      70% {
+        transform: scale(1.25);
+      }
+
+      100% {
+        transform: scale(0.85);
+      }
+    }
+
+    #root,
+    #cookie-banner {
+      opacity: 0;
+      animation: fade-in 0.75s ease-out forwards;
+    }
+
+    @keyframes fade-in {
+      100% {
+        opacity: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="loading-screen" id="loading-screen">
+    <div class="loading-container">
+      <div class='spinner-container' >
+        <img src="/assets/logo.png" alt="Loading..."/>
+      </div>
+    </div>
+  </div>
+  <div id="root" style="display: none;"></div>
+  <div id="cookie-banner" style="display: none;"></div>
+  <div id="modal"></div>
+  <script>
+    // document.getElementById("custom-loader").style.display = "block";
+    // document.getElementById("custom-loader-text").style.display = "block";
+  </script>
+</body>
+
+</html>
