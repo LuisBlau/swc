@@ -94,14 +94,14 @@ const Play = (props, { history }) => {
                   <Text textAlign="right">
                     <strong>{currentTable.name}</strong> |{' '}
                     <strong>
-                      {getLocalizedString('game_info_limit-lbl')}:{' '}
+                      Cash Game:{' '}
                     </strong>
                     {new Intl.NumberFormat(
                       document.documentElement.lang,
                     ).format(currentTable.limit)}{' '}
                     |{' '}
                     <strong>
-                      {getLocalizedString('game_info_blinds-lbl')}:{' '}
+                      Stakes:{' '}
                     </strong>
                     {new Intl.NumberFormat(
                       document.documentElement.lang,

@@ -199,7 +199,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Customers | Devias Kit
+          Customers | SWC Poker Admin
         </title>
       </Head>
       <Box

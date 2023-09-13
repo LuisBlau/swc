@@ -8,7 +8,7 @@ const Page = () => (
   <>
     <Head>
       <title>
-        Account | Devias Kit
+        Account | SWC Poker Admin
       </title>
     </Head>
     <Box

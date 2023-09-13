@@ -208,7 +208,7 @@ export const Seat = ({ currentTable, seatNumber, isPlayerSeated, sitDown }) => {
 
           {currentTable.button === seatNumber && (
             <PositionedUISlot
-              right="35px"
+              right="45px"
               origin="center left"
               style={{ zIndex: '55' }}
             >

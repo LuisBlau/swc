@@ -66,7 +66,7 @@ class Table {
 
   rebuyPlayer(seatId, amount) {
     if (!this.seats[seatId]) {
-      throw new Error('No seated player to rebuy');
+      console.log('rebuyPlayer: No seated player to rebuy');
     }
     this.seats[seatId].stack += amount;
   }
@@ -95,7 +95,7 @@ class Table {
         return this.seats[i];
       }
     }
-    // throw new Error('seat not found!');
+    console.log('findPlayerBySocketId: seat not found!');
   }
   unfoldedPlayers() {
     return Object.values(this.seats).filter(

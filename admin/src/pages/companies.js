@@ -71,7 +71,7 @@ const Page = () => (
   <>
     <Head>
       <title>
-        Companies | Devias Kit
+        Companies | SWC Poker Admin
       </title>
     </Head>
     <Box

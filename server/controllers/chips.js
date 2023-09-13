@@ -11,9 +11,10 @@ exports.handleFreeChipsRequest = async (req, res) => {
     if (user.chipsAmount <= 1000) {
       user.chipsAmount += INITIAL_CHIPS_AMOUNT;
       await user.save();
-
+      console.error("handleFreeChipsRequest: Free Chips Credited!");
       return res.status(200).json(user);
     } else {
+      console.error("handleFreeChipsRequest: user.chipsAmount > 1000!");
       return res.status(400).json({ errors: [{ msg: 'Invalid request' }] });
     }
   } catch (err) {

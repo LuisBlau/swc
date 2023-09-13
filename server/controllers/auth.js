@@ -23,6 +23,7 @@ exports.getCurrentUser = async (req, res) => {
 // @desc    Authenticate user & get token
 // @access  Public
 exports.login = async (req, res) => {
+  console.error("auth.js: Login request received!", req);
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -35,12 +36,14 @@ exports.login = async (req, res) => {
     let user = await User.findOne({ email });
 
     if (!user) {
+      console.error("No user found by the email address provided!", email);
       return res.status(400).json({ errors: [{ msg: 'Invalid credentials' }] });
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
 
     if (!isMatch) {
+      console.error("Password mismatched!", password);
       return res.status(400).json({ errors: [{ msg: 'Invalid credentials' }] });
     }
 

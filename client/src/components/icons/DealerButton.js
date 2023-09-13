@@ -2,9 +2,16 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import dealerImg from '../../assets/game/dealer-button.svg';
 
-const DealerButton = ({ width, height }) => (
-  <img width={width} height={height} src={dealerImg} />
-);
+const DealerButton = ({ width, height }) => {
+  const imgStyle = {
+    width: width + 'px', // Add 'px' to specify the unit
+    height: height + 'px', // Add 'px' to specify the unit
+  };
+
+   return (      
+      <img alt="Dealer" style={imgStyle} src={dealerImg} />
+    );
+}
 
 DealerButton.propTypes = {
   width: PropTypes.string,
@@ -12,8 +19,8 @@ DealerButton.propTypes = {
 };
 
 DealerButton.defaultProps = {
-  width: '40px',
-  height: '40px',
+  width: '30',
+  height: '30',
 };
 
 export default DealerButton;

@@ -28,7 +28,7 @@ const {
 const config = require('../config');
 
 const tables = {
-  1: new Table(1, 'Table 1', 10000),
+  1: new Table(1, 'Online Poker (Demo) #1', 10000),
 };
 const players = {};
 
@@ -314,13 +314,13 @@ const init = (socket, io) => {
 
   function initNewHand(table) {
     if (table.activePlayers().length > 1) {
-      broadcastToTable(table, '---New hand starting in 5 seconds---');
+      broadcastToTable(table, 'New hand starting.');
     }
     setTimeout(() => {
       table.clearWinMessages();
       table.startHand();
-      broadcastToTable(table, '--- New hand started ---');
-    }, 5000);
+      broadcastToTable(table, 'New hand started.');
+    }, 4000);
   }
 
   function clearForOnePlayer(table) {
@@ -329,7 +329,7 @@ const init = (socket, io) => {
       table.clearSeatHands();
       table.resetBoardAndPot();
       broadcastToTable(table, 'Waiting for more players');
-    }, 5000);
+    }, 1000);
   }
 
   function hideOpponentCards(table, socketId) {
