@@ -2,12 +2,15 @@ export const createTypography = () => {
   return {
     fontFamily: '"Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji"',
     body1: {
+      color: '#fff',
+      backgroundColor: '#161b28',
       fontSize: '1rem',
       fontWeight: 400,
       lineHeight: 1.5
     },
     body2: {
       fontSize: '0.875rem',
+      backgroundColor: '#161b28',
       fontWeight: 400,
       lineHeight: 1.57
     },

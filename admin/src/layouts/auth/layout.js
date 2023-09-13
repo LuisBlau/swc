@@ -7,101 +7,67 @@ import { Logo } from 'src/components/logo';
 
 export const Layout = (props) => {
   const { children } = props;
-
   return (
     <Box
       component="main"
       sx={{
         display: 'flex',
-        flex: '1 1 auto'
+        flex: '1 1 auto',
+        backgroundImage: 'url(/assets/background.jpg)',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat'
       }}
     >
-      <Grid
-        container
-        sx={{ flex: '1 1 auto' }}
+      <Box
+        component="header"
+        sx={{
+          left: 0,
+          p: 3,
+          position: 'fixed',
+          top: 0,
+          width: '100%'
+        }}
       >
-        <Grid
-          xs={12}
-          lg={6}
+        <Box
+          component={NextLink}
+          href="/"
           sx={{
-            backgroundColor: 'background.paper',
-            display: 'flex',
-            flexDirection: 'column',
-            position: 'relative'
+            display: 'inline-flex',
+            height: 100,
+            width: 100
           }}
         >
+          <Logo />
+        </Box>
+        <Typography
+          align="center"
+          color="inherit"
+          sx={{
+            fontSize: '24px',
+            lineHeight: '32px',
+            mb: 1
+          }}
+          variant="h1"
+        >
+          Welcome to{' '}
           <Box
-            component="header"
-            sx={{
-              left: 0,
-              p: 3,
-              position: 'fixed',
-              top: 0,
-              width: '100%'
-            }}
+            component="a"
+            sx={{ color: '#15B79E' }}
+            target="_blank"
           >
-            <Box
-              component={NextLink}
-              href="/"
-              sx={{
-                display: 'inline-flex',
-                height: 32,
-                width: 32
-              }}
-            >
-              <Logo />
-            </Box>
+            SWC Poker Admin Panel
           </Box>
-          {children}
-        </Grid>
-        <Grid
-          xs={12}
-          lg={6}
-          sx={{
-            alignItems: 'center',
-            background: 'radial-gradient(50% 50% at 50% 50%, #122647 0%, #090E23 100%)',
-            color: 'white',
-            display: 'flex',
-            justifyContent: 'center',
-            '& img': {
-              maxWidth: '100%'
-            }
-          }}
+        </Typography>
+        <Typography
+          align="center"
+          sx={{ mb: 3 }}
+          variant="subtitle1"
         >
-          <Box sx={{ p: 3 }}>
-            <Typography
-              align="center"
-              color="inherit"
-              sx={{
-                fontSize: '24px',
-                lineHeight: '32px',
-                mb: 1
-              }}
-              variant="h1"
-            >
-              Welcome to{' '}
-              <Box
-                component="a"
-                sx={{ color: '#15B79E' }}
-                target="_blank"
-              >
-                Devias Kit
-              </Box>
-            </Typography>
-            <Typography
-              align="center"
-              sx={{ mb: 3 }}
-              variant="subtitle1"
-            >
-              A professional kit that comes with ready-to-use MUI components.
-            </Typography>
-            <img
-              alt=""
-              src="/assets/auth-illustration.svg"
-            />
-          </Box>
-        </Grid>
-      </Grid>
+          Your gateway to managing and overseeing all aspects of your poker platform.
+        </Typography>
+      {children}
+      </Box>
     </Box>
   );
 };

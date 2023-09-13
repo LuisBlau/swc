@@ -13,13 +13,13 @@ export function createPalette() {
       selected: alpha(neutral[900], 0.12)
     },
     background: {
-      default: common.white,
-      paper: common.white
+      default: "#161b28",
+      paper: "#161b28"
     },
-    divider: '#F2F4F7',
+    divider: '#2f3749',
     error,
     info,
-    mode: 'light',
+    mode: 'white',
     neutral,
     primary: indigo,
     success,

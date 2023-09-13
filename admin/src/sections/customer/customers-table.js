@@ -83,7 +83,11 @@ export const CustomersTable = (props) => {
                     key={customer.id}
                     selected={isSelected}
                   >
-                    <TableCell padding="checkbox">
+                    <TableCell padding="checkbox"
+                      sx={{
+                        backgroundColor:"#1d2333" 
+                      }}
+                    >
                       <Checkbox
                         checked={isSelected}
                         onChange={(event) => {
@@ -95,30 +99,48 @@ export const CustomersTable = (props) => {
                         }}
                       />
                     </TableCell>
-                    <TableCell>
+                    <TableCell
+                      sx={{
+                        backgroundColor:"#1d2333" 
+                      }}
+                    >
                       <Stack
                         alignItems="center"
                         direction="row"
                         spacing={2}
+                        color="#4ff461"
                       >
-                        <Avatar src={customer.avatar}>
-                          {getInitials(customer.name)}
-                        </Avatar>
                         <Typography variant="subtitle2">
                           {customer.name}
                         </Typography>
                       </Stack>
                     </TableCell>
-                    <TableCell>
+                    <TableCell
+                      sx={{
+                        backgroundColor:"#1d2333" 
+                      }}
+                    >
                       {customer.email}
                     </TableCell>
-                    <TableCell>
+                    <TableCell
+                      sx={{
+                        backgroundColor:"#1d2333" 
+                      }}
+                    >
                       {customer.address.city}, {customer.address.state}, {customer.address.country}
                     </TableCell>
-                    <TableCell>
+                    <TableCell
+                      sx={{
+                        backgroundColor:"#1d2333" 
+                      }}
+                    >
                       {customer.phone}
                     </TableCell>
-                    <TableCell>
+                    <TableCell
+                      sx={{
+                        backgroundColor:"#1d2333" 
+                      }}
+                    >
                       {createdAt}
                     </TableCell>
                   </TableRow>

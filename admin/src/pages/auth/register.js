@@ -48,7 +48,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Register | Devias Kit
+          Register | SWC Poker Admin
         </title>
       </Head>
       <Box
@@ -83,7 +83,7 @@ const Page = () => {
                 &nbsp;
                 <Link
                   component={NextLink}
-                  href="/auth/login"
+                  href="/"
                   underline="hover"
                   variant="subtitle2"
                 >

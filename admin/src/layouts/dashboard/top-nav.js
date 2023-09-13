@@ -31,7 +31,7 @@ export const TopNav = (props) => {
         component="header"
         sx={{
           backdropFilter: 'blur(6px)',
-          backgroundColor: (theme) => alpha(theme.palette.background.default, 0.8),
+          backgroundColor: '#7750f8',
           position: 'sticky',
           left: {
             lg: `${SIDE_NAV_WIDTH}px`
@@ -59,14 +59,14 @@ export const TopNav = (props) => {
             spacing={2}
           >
             {!lgUp && (
-              <IconButton onClick={onNavOpen}>
+              <IconButton onClick={onNavOpen} sx={{color:"#fff"}}>
                 <SvgIcon fontSize="small">
                   <Bars3Icon />
                 </SvgIcon>
               </IconButton>
             )}
             <Tooltip title="Search">
-              <IconButton>
+              <IconButton sx={{color:"#fff"}}>
                 <SvgIcon fontSize="small">
                   <MagnifyingGlassIcon />
                 </SvgIcon>
@@ -78,15 +78,15 @@ export const TopNav = (props) => {
             direction="row"
             spacing={2}
           >
-            <Tooltip title="Contacts">
-              <IconButton>
+            {/* <Tooltip title="Contacts">
+              <IconButton sx={{color:"#fff"}}>
                 <SvgIcon fontSize="small">
                   <UsersIcon />
                 </SvgIcon>
               </IconButton>
             </Tooltip>
             <Tooltip title="Notifications">
-              <IconButton>
+              <IconButton sx={{color:"#fff"}}>
                 <Badge
                   badgeContent={4}
                   color="success"
@@ -97,7 +97,7 @@ export const TopNav = (props) => {
                   </SvgIcon>
                 </Badge>
               </IconButton>
-            </Tooltip>
+            </Tooltip> */}
             <Avatar
               onClick={accountPopover.handleOpen}
               ref={accountPopover.anchorRef}
@@ -106,7 +106,7 @@ export const TopNav = (props) => {
                 height: 40,
                 width: 40
               }}
-              src="/assets/avatars/avatar-anika-visser.png"
+              src="/assets/avatars/admin.png"
             />
           </Stack>
         </Stack>

@@ -7,7 +7,7 @@ const Page = () => (
   <>
     <Head>
       <title>
-        404 | Devias Kit
+        404 | SWC Poker Admin
       </title>
     </Head>
     <Box
@@ -60,7 +60,7 @@ const Page = () => (
           </Typography>
           <Button
             component={NextLink}
-            href="/"
+            href="/dashboard"
             startIcon={(
               <SvgIcon fontSize="small">
                 <ArrowLeftIcon />

@@ -13,7 +13,7 @@ export const AccountPopover = (props) => {
     () => {
       onClose?.();
       auth.signOut();
-      router.push('/auth/login');
+      router.push('/');
     },
     [onClose, auth, router]
   );
@@ -42,7 +42,7 @@ export const AccountPopover = (props) => {
           color="text.secondary"
           variant="body2"
         >
-          Anika Visser
+          Administrator
         </Typography>
       </Box>
       <Divider />

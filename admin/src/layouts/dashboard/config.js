@@ -11,7 +11,7 @@ import { SvgIcon } from '@mui/material';
 export const items = [
   {
     title: 'Overview',
-    path: '/',
+    path: '/dashboard',
     icon: (
       <SvgIcon fontSize="small">
         <ChartBarIcon />
@@ -56,7 +56,7 @@ export const items = [
   },
   // {
   //   title: 'Login',
-  //   path: '/auth/login',
+  //   path: '/',
   //   icon: (
   //     <SvgIcon fontSize="small">
   //       <LockClosedIcon />

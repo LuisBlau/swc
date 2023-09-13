@@ -44,7 +44,7 @@ export const SideNav = (props) => {
         <Box sx={{ p: 3 }}>
           <Box
             component={NextLink}
-            href="/"
+            href="/dashboard"
             sx={{
               display: 'inline-flex',
               height: 100,
@@ -72,12 +72,6 @@ export const SideNav = (props) => {
               >
                 Admin Panel
               </Typography>
-              <Typography
-                color="neutral.400"
-                variant="body2"
-              >
-                v1.0.0
-              </Typography>
             </div>
             <SvgIcon
               fontSize="small"
@@ -87,7 +81,7 @@ export const SideNav = (props) => {
             </SvgIcon>
           </Box>
         </Box>
-        <Divider sx={{ borderColor: 'neutral.700' }} />
+        <Divider sx={{ borderColor: '#2f3749' }} />
         <Box
           component="nav"
           sx={{

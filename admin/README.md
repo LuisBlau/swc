@@ -16,7 +16,7 @@
 - [Customers Page](https://material-kit-react.devias.io/customers)
 - [Account Page](https://material-kit-react.devias.io/account)
 - [Settings Page](https://material-kit-react.devias.io/settings)
-- [Login Page](https://material-kit-react.devias.io/auth/login)
+- [Login Page](https://material-kit-react.devias.io/)
 - [Register Page](https://material-kit-react.devias.io/auth/register)
 
 ## Free Figma Community File
