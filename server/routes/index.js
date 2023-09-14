@@ -4,7 +4,7 @@ const configureRoutes = (app) => {
   app.use('/api/mails', require('./api/mails'));
   app.use('/api/chips', require('./api/chips'));
   app.use('/', (req, res) => {
-    res.status(200).send('Welcome to Vintage Poker!');
+    res.status(200).send('Welcome to SwC Poker!');
   });
 };
 

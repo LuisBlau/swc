@@ -1,14 +1,14 @@
 {
   "name": "swc-admin",
   "version": "3.0.0",
-  "author": "Devias",
+  "author": "ScW Dev",
   "licence": "MIT",
-  "homepage": "https://devias.io",
+  "homepage": "https://swc.io",
   "private": false,
   "scripts": {
-    "dev": "next",
+    "dev": "next -p 4000",
     "build": "next build",
-    "start": "next start",
+    "start": "next start -p 4000",
     "export": "next export",
     "lint": "next lint",
     "lint-fix": "next lint --fix"

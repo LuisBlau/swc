@@ -30,8 +30,8 @@ export const TopNav = (props) => {
       <Box
         component="header"
         sx={{
-          backdropFilter: 'blur(6px)',
-          backgroundColor: '#7750f8',
+          backdropFilter: 'blur(15px)',
+          backgroundColor: 'rgba(16, 185, 129, 0.12)',
           position: 'sticky',
           left: {
             lg: `${SIDE_NAV_WIDTH}px`

@@ -5,7 +5,7 @@ const Text = require('../components/Text');
 const WelcomeMailContent = () => `
 ${ContentBlock(
   `${Text(
-    'Welcome to Vintage Poker and thank you for registering to our service!',
+    'Welcome to SwC Poker and thank you for registering to our service!',
   )}`,
 )}
 ${Button('Play now!', 'https://www.vintagepoker.net')}

@@ -5,7 +5,7 @@ const mongoSanitize = require('express-mongo-sanitize');
 const xssClean = require('xss-clean');
 const expressRateLimit = require('express-rate-limit');
 const hpp = require('hpp');
-// const cors = require('cors');
+const cors = require('cors');
 const logger = require('./logger');
 
 const configureMiddleware = (app) => {
@@ -36,7 +36,7 @@ const configureMiddleware = (app) => {
   app.use(hpp());
 
   // Enable CORS
-  // app.use(cors());
+  app.use(cors());
 
   // Custom logging middleware
   app.use(logger);

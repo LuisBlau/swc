@@ -26,7 +26,7 @@ const Landing = () => {
     <Container fullHeight contentCenteredMobile padding="4rem 2rem 2rem 2rem">
       <CenteredBlockWithAnimation>
         <Hider hideOnDesktop>
-          <MobileIllustration src={illustrationMobile} alt="Vintage Poker" />
+          <MobileIllustration src={illustrationMobile} alt="SwC Poker" />
         </Hider>
         <Markdown>
           <MarketingHeadline
@@ -66,7 +66,7 @@ const Landing = () => {
         </Wrapper>
       </CenteredBlockWithAnimation>
       <Hider hideOnMobile>
-        <DesktopIllustration src={illustrationDesktop} alt="Vintage Poker" />
+        <DesktopIllustration src={illustrationDesktop} alt="SwC Poker" />
       </Hider>
     </Container>
   );

@@ -1,0 +1,20 @@
+/* Thin scrollbar for webkit-based browsers */
+::-webkit-scrollbar {
+    width: 2px; /* Set the width of the scrollbar */
+  }
+  
+  /* Track (the area where the scrollbar moves) */
+  ::-webkit-scrollbar-track {
+    background-color: #000; /* Background color of the track */
+  }
+  
+  /* Handle (the draggable part of the scrollbar) */
+  ::-webkit-scrollbar-thumb {
+    background-color: #2f3749; /* Color of the scrollbar handle */
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: #242323; /* Color of the scrollbar handle when hovered */
+  }
+  

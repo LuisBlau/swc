@@ -87,7 +87,7 @@ const Page = () => {
     <>
       <Head>
         <title>
-          Customers | SWC Poker Admin
+          Cashier | SWC Poker Admin
         </title>
       </Head>
       <Box
@@ -104,7 +104,7 @@ const Page = () => {
               justifyContent="space-between"
               spacing={4}
               sx={{
-                background: "url(/assets/banner/banner-bg.png)",
+                background: "url(/assets/banner/banner-bg-2.png)",
                 padding: "30px",
                 borderRadius: "5px",
                 backgroundRepeat: "no-repeat",
@@ -113,7 +113,7 @@ const Page = () => {
             >
               <Stack spacing={1} >
                 <Typography variant="h4">
-                  Customers
+                  Cashier
                 </Typography>
                 <Stack
                   alignItems="center"
@@ -143,7 +143,7 @@ const Page = () => {
                 </Stack>
               </Stack>
               <div>
-                {/* <Button
+                <Button
                   startIcon={(
                     <SvgIcon fontSize="small">
                       <PlusIcon />
@@ -151,8 +151,8 @@ const Page = () => {
                   )}
                   variant="contained"
                 >
-                  Add
-                </Button> */}
+                  Add Table
+                </Button>
               </div>
             </Stack>
             <CustomersSearch />

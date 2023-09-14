@@ -26,7 +26,7 @@
       <mj-column>
         <mj-image
           align="center"
-          alt="Vintage Poker"
+          alt="SwC Poker"
           border-radius="0"
           border="none"
           height="auto"
@@ -252,7 +252,7 @@
                 font-size: 15px;
                 line-height: 10px;
               "
-              ><i>The Vintage Poker Team</i></span
+              ><i>The SwC Poker Team</i></span
             >
           </p>
         </mj-text>
@@ -300,7 +300,7 @@
                 font-size: 13px;
                 line-height: 13px;
               "
-              >© 2020 Vintage Poker. All rights reserved.</span
+              >© 2020 SwC Poker. All rights reserved.</span
             >
           </p>
         </mj-text>

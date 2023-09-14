@@ -21,7 +21,7 @@ export const OverviewBudget = (props) => {
               color="text.secondary"
               variant="overline"
             >
-              Budget
+              Total Deposit
             </Typography>
             <Typography variant="h4">
               {value}

@@ -61,6 +61,7 @@ class CustomDocument extends Document {
         <Head>
           <Favicon />
           <Fonts />
+          <link rel="stylesheet" href="/css/global.css" />
         </Head>
         <body>
         <Main />

@@ -65,7 +65,7 @@ export const CustomersTable = (props) => {
                   Location
                 </TableCell>
                 <TableCell>
-                  Phone
+                  Bankroll
                 </TableCell>
                 <TableCell>
                   Signed Up
@@ -74,13 +74,13 @@ export const CustomersTable = (props) => {
             </TableHead>
             <TableBody>
               {items.map((customer) => {
-                const isSelected = selected.includes(customer.id);
-                const createdAt = format(customer.createdAt, 'dd/MM/yyyy');
+                const isSelected = selected.includes(customer._id);
+                const createdAt = customer.created;
 
                 return (
                   <TableRow
                     hover
-                    key={customer.id}
+                    key={customer._id}
                     selected={isSelected}
                   >
                     <TableCell padding="checkbox"
@@ -92,9 +92,9 @@ export const CustomersTable = (props) => {
                         checked={isSelected}
                         onChange={(event) => {
                           if (event.target.checked) {
-                            onSelectOne?.(customer.id);
+                            onSelectOne?.(customer._id);
                           } else {
-                            onDeselectOne?.(customer.id);
+                            onDeselectOne?.(customer._id);
                           }
                         }}
                       />
@@ -127,14 +127,14 @@ export const CustomersTable = (props) => {
                         backgroundColor:"#1d2333" 
                       }}
                     >
-                      {customer.address.city}, {customer.address.state}, {customer.address.country}
+                      -
                     </TableCell>
                     <TableCell
                       sx={{
                         backgroundColor:"#1d2333" 
                       }}
                     >
-                      {customer.phone}
+                      {customer.chipsAmount}
                     </TableCell>
                     <TableCell
                       sx={{

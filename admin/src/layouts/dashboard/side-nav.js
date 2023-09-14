@@ -42,16 +42,22 @@ export const SideNav = (props) => {
         }}
       >
         <Box sx={{ p: 3 }}>
-          <Box
-            component={NextLink}
-            href="/dashboard"
-            sx={{
-              display: 'inline-flex',
-              height: 100,
-              width: 100
-            }}
+          <Box sx={{
+                maxWidth: '120px',
+                margin: 'auto'
+              }}
           >
-            <Logo />
+            <Box
+              component={NextLink}
+              href="/dashboard"
+              sx={{
+                display: 'inline-flex',
+                height: 110,
+                width: 110
+              }}
+            >
+              <Logo />
+            </Box>
           </Box>
           <Box
             sx={{

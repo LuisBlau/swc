@@ -1,6 +1,6 @@
-# Vintage Poker
+# SwC Poker
 
-Vintage Poker is a full-stack poker platform built with the MERN-stack, where a user can create an account and play poker on a predetermined set of tables (differ in amount of blinds & buy-ins). The player starts with a specific amount of virtual currency he can play with.
+SwC Poker is a full-stack poker platform built with the MERN-stack, where a user can create an account and play poker on a predetermined set of tables (differ in amount of blinds & buy-ins). The player starts with a specific amount of virtual currency he can play with.
 
 The server part of the application is a Node- / Express-Backend. The Frontend is a React application. Non Real-Time communication between front- & backend is handled via a REST-API. In-game logic-related communications & chat is handled via web sockets / Socket.io.
 

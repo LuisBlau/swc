@@ -19,7 +19,6 @@ export function createPalette() {
     divider: '#2f3749',
     error,
     info,
-    mode: 'white',
     neutral,
     primary: indigo,
     success,

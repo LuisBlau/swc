@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const { check } = require('express-validator');
-const { register } = require('../../controllers/users');
+const {
+  register,
+  getAllUsers
+} = require('../../controllers/users');
 
 router.post(
   '/',
@@ -14,6 +17,11 @@ router.post(
     ).isLength({ min: 6 }),
   ],
   register,
+);
+
+router.post(
+  '/all',
+  getAllUsers
 );
 
 module.exports = router;

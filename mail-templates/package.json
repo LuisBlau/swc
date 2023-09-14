@@ -1,7 +1,7 @@
 {
   "name": "poker-app-mail-templates",
   "version": "1.0.0",
-  "description": "Mail-templates for Vintage Poker app",
+  "description": "Mail-templates for SwC Poker app",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
