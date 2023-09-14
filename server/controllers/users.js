@@ -72,16 +72,7 @@ exports.register = async (req, res) => {
 // Define the getAllUsers route handler function
 exports.getAllUsers = async (req, res) => {
   try {
-    // Fetch all users from the database
     const users = await User.find();
-
-    // Check if there are no users
-    if (!users || users.length === 0) {
-      //return res.status(404).json({ msg: 'No users found' });
-      return [];
-    }
-
-    // Return the users as a JSON response
     res.status(200).json(users);
   } catch (error) {
     console.error(error.message);

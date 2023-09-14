@@ -35,8 +35,12 @@ const configureMiddleware = (app) => {
   // Prevent http param pollution
   app.use(hpp());
 
-  // Enable CORS
-  app.use(cors());
+  // Configure CORS to allow requests from your frontend domain
+  app.use(cors({
+    origin: '*', // Replace with your frontend domain
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true, // Enable cookies, if needed
+  }));
 
   // Custom logging middleware
   app.use(logger);

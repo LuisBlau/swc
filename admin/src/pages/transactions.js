@@ -7,10 +7,9 @@ import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import { Box, Button, Container, Stack, SvgIcon, Typography } from '@mui/material';
 import { useSelection } from 'src/hooks/use-selection';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { CustomersTable } from 'src/sections/customer/customers-table';
-import { CustomersSearch } from 'src/sections/customer/customers-search';
+import { CustomersTable } from 'src/sections/transaction/customers-table';
+import { CustomersSearch } from 'src/sections/transaction/customers-search';
 import { applyPagination } from 'src/utils/apply-pagination';
-
 
 const Page = () => {
   const [data, setData] = useState([]);
@@ -19,7 +18,7 @@ const Page = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/users/all', {
+        const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/transactions/all', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -142,7 +141,7 @@ const Page = () => {
                   </Button>
                 </Stack>
               </Stack>
-              <div>
+              {/* <div>
                 <Button
                   startIcon={(
                     <SvgIcon fontSize="small">
@@ -153,7 +152,7 @@ const Page = () => {
                 >
                   Add Table
                 </Button>
-              </div>
+              </div> */}
             </Stack>
             <CustomersSearch />
             {

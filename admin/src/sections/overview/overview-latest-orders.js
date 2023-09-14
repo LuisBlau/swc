@@ -36,10 +36,19 @@ export const OverviewLatestOrders = (props) => {
             <TableHead>
               <TableRow>
                 <TableCell>
-                  Order
+                  Type
                 </TableCell>
                 <TableCell>
-                  Customer
+                  From
+                </TableCell>
+                <TableCell>
+                  To
+                </TableCell>
+                <TableCell>
+                  Currency
+                </TableCell>
+                <TableCell>
+                  Amount
                 </TableCell>
                 <TableCell sortDirection="desc">
                   Date
@@ -51,21 +60,30 @@ export const OverviewLatestOrders = (props) => {
             </TableHead>
             <TableBody>
               {orders.map((order) => {
-                const createdAt = format(order.createdAt, 'dd/MM/yyyy');
-
                 return (
                   <TableRow
                     hover
-                    key={order.id}
+                    key={order._id}
                   >
-                    <TableCell>
-                      {order.ref}
+                    <TableCell sx={{
+                      textTransform: 'uppercase'
+                    }}>
+                      {order.type}
                     </TableCell>
                     <TableCell>
-                      {order.customer.name}
+                      {order.from}
                     </TableCell>
                     <TableCell>
-                      {createdAt}
+                      {order.to}
+                    </TableCell>
+                    <TableCell>
+                      {order.currency}
+                    </TableCell>
+                    <TableCell>
+                      {order.amount}
+                    </TableCell>
+                    <TableCell>
+                      -
                     </TableCell>
                     <TableCell>
                       <SeverityPill color={statusMap[order.status]}>
@@ -90,6 +108,9 @@ export const OverviewLatestOrders = (props) => {
           )}
           size="small"
           variant="text"
+          onClick={() => {
+            window.location.href = "/transactions";
+          }}
         >
           View all
         </Button>

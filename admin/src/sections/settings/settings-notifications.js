@@ -50,16 +50,8 @@ export const SettingsNotifications = () => {
                     label="Email"
                   />
                   <FormControlLabel
-                    control={<Checkbox defaultChecked />}
-                    label="Push Notifications"
-                  />
-                  <FormControlLabel
                     control={<Checkbox />}
                     label="Text Messages"
-                  />
-                  <FormControlLabel
-                    control={<Checkbox defaultChecked />}
-                    label="Phone calls"
                   />
                 </Stack>
               </Stack>
@@ -76,16 +68,8 @@ export const SettingsNotifications = () => {
                 </Typography>
                 <Stack>
                   <FormControlLabel
-                    control={<Checkbox defaultChecked />}
-                    label="Email"
-                  />
-                  <FormControlLabel
                     control={<Checkbox />}
                     label="Push Notifications"
-                  />
-                  <FormControlLabel
-                    control={<Checkbox defaultChecked />}
-                    label="Phone calls"
                   />
                 </Stack>
               </Stack>

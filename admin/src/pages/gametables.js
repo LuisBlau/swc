@@ -7,8 +7,8 @@ import PlusIcon from '@heroicons/react/24/solid/PlusIcon';
 import { Box, Button, Container, Stack, SvgIcon, Typography } from '@mui/material';
 import { useSelection } from 'src/hooks/use-selection';
 import { Layout as DashboardLayout } from 'src/layouts/dashboard/layout';
-import { CustomersTable } from 'src/sections/customer/customers-table';
-import { CustomersSearch } from 'src/sections/customer/customers-search';
+import { GamesTable } from 'src/sections/gametable/games-table';
+import { GamesSearch } from 'src/sections/gametable/games-search';
 import { applyPagination } from 'src/utils/apply-pagination';
 
 
@@ -19,7 +19,7 @@ const Page = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/users/all', {
+        const response = await fetch(process.env.NEXT_PUBLIC_API_URL + '/api/tables/all', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -150,17 +150,20 @@ const Page = () => {
                     </SvgIcon>
                   )}
                   variant="contained"
+                  onClick={() => {
+                    window.location.href = "/gametables/add";
+                  }}
                 >
                   Add Table
                 </Button>
               </div>
             </Stack>
-            <CustomersSearch />
+            <GamesSearch />
             {
               loading?
               <p>Loading...</p>
               :
-                <CustomersTable
+                <GamesTable
                 count={data.length}
                 items={customers}
                 onDeselectAll={customersSelection.handleDeselectAll}
