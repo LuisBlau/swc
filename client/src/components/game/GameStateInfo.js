@@ -1,6 +1,8 @@
-import React, { useContext } from 'react';
+import React
+// , { useContext } 
+from 'react';
 import styled from 'styled-components';
-import contentContext from '../../context/content/contentContext';
+// import contentContext from '../../context/content/contentContext';
 import ChipsAmountPill from './ChipsAmountPill';
 import { InfoPill } from './InfoPill';
 
@@ -15,7 +17,7 @@ const Wrapper = styled.div`
 `;
 
 export const GameStateInfo = ({ currentTable }) => {
-  const { getLocalizedString } = useContext(contentContext);
+  // const { getLocalizedString } = useContext(contentContext);
 
   return (
     <Wrapper>

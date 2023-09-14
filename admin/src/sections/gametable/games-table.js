@@ -67,6 +67,9 @@ export const GamesTable = (props) => {
                 <TableCell>
                   Limit
                 </TableCell>
+                <TableCell>
+                  Stakes
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -131,6 +134,13 @@ export const GamesTable = (props) => {
                       }}
                     >
                       {customer.limit}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        backgroundColor:"#1d2333" 
+                      }}
+                    >
+                      {customer.limit/200} / {customer.limit/100}
                     </TableCell>
                   </TableRow>
                 );

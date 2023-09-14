@@ -82,25 +82,6 @@ const GameHeader  = (props) => {
         </div>
       </div>
     </div>
-    <object
-      tabIndex={-1}
-      type="text/html"
-      data="about:blank"
-      style={{
-        display: "block",
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        border: "none",
-        padding: 0,
-        margin: 0,
-        opacity: 0,
-        zIndex: -1000,
-        pointerEvents: "none"
-      }}
-    />
   </div>
   );
 };

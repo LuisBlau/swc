@@ -17,7 +17,7 @@ import { EmptySeat } from './EmptySeat';
 import { OccupiedSeat } from './OccupiedSeat';
 import { Hand } from './Hand';
 import { NameTag } from './NameTag';
-import contentContext from '../../context/content/contentContext';
+// import contentContext from '../../context/content/contentContext';
 import Markdown from 'react-remarkable';
 import DealerButton from '../icons/DealerButton';
 import { StyledSeat } from './StyledSeat';
@@ -26,7 +26,7 @@ export const Seat = ({ currentTable, seatNumber, isPlayerSeated, sitDown }) => {
   const { openModal, closeModal } = useContext(modalContext);
   const { chipsAmount } = useContext(globalContext);
   const { standUp, seatId, rebuy } = useContext(gameContext);
-  const { getLocalizedString } = useContext(contentContext);
+  // const { getLocalizedString } = useContext(contentContext);
 
   const seat = currentTable.seats[seatNumber];
   const maxBuyin = currentTable.limit;

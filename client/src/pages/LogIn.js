@@ -12,7 +12,7 @@ import React, { useState, useRef, useContext } from 'react';
 // import ShowPasswordButton from '../components/buttons/ShowPasswordButton';
 import useScrollToTopOnPageLoad from '../hooks/useScrollToTopOnPageLoad';
 import authContext from '../context/auth/authContext';
-import contentContext from '../context/content/contentContext';
+// import contentContext from '../context/content/contentContext';
 // import { TiledBackgroundImage } from '../components/decoration/
 const LogIn = (props) => {
     const {setAuthWindow} = props;
@@ -33,7 +33,7 @@ const LogIn = (props) => {
         setClosed(true);
     }
 
-    const { getLocalizedString } = useContext(contentContext);
+    // const { getLocalizedString } = useContext(contentContext);
     const { login, isLoggedIn } = useContext(authContext);
 
     useScrollToTopOnPageLoad();

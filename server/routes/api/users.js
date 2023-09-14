@@ -3,7 +3,9 @@ const router = express.Router();
 const { check } = require('express-validator');
 const {
   register,
-  getAllUsers
+  getAllUsers,
+  getLeaderboard,
+  GetCustomersCount
 } = require('../../controllers/users');
 
 router.post(
@@ -22,6 +24,16 @@ router.post(
 router.post(
   '/all',
   getAllUsers
+);
+
+router.post(
+  '/leaderboard',
+  getLeaderboard
+);
+
+router.post(
+  '/count',
+  GetCustomersCount
 );
 
 module.exports = router;

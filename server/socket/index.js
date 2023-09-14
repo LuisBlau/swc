@@ -27,11 +27,29 @@ const {
 } = require('../pokergame/actions');
 const config = require('../config');
 
-const tables = {
-  1: new Table(1, 'Online Poker (Demo) #1', 10000),
-};
-const players = {};
+const tableModel = require('../models/Table');
 
+const tables = {};
+const initializeTables = async () => {
+  try {
+    const tableData = await tableModel.find();
+    tableData.map((table) => {
+      tables[table.id] = new Table(table.id, table.name, table.limit, table.maxPlayers);
+    });
+    console.log(tables);
+  } catch (error) {
+    console.error(error);
+  }
+};
+initializeTables();
+
+async function addTable(tableID) {
+  const table = await tableModel.findById(tableID);
+  console.log("New Table Detected", table);
+  tables[tableID] = new Table(table.id, table.name, table.limit, table.maxPlayers);
+}
+
+const players = {};
 function getCurrentPlayers() {
   return Object.values(players).map((player) => ({
     socketId: player.socketId,
@@ -94,10 +112,17 @@ const init = (socket, io) => {
     }
   });
 
-  socket.on(JOIN_TABLE, (tableId) => {
+  socket.on(JOIN_TABLE, async (tableId) => {
+    console.log("JOIN_TABLE", tableId);
+
+    if (!tables[tableId]) {
+      console.log("Table not found. Adding new table.");
+      await addTable(tableId);
+      console.log("New Table Added", tables[tableId]);
+    }
+    
     const table = tables[tableId];
     const player = players[socket.id];
-
     table.addPlayer(player);
 
     socket.emit(TABLE_JOINED, { tables: getCurrentTables(), tableId });

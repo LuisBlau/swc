@@ -1,6 +1,6 @@
 import React, { useState, useRef, useContext } from 'react';
 import authContext from '../context/auth/authContext';
-import contentContext from '../context/content/contentContext';
+// import contentContext from '../context/content/contentContext';
 
 const Register = (props) => {
     const [closed, setClosed] = useState(false);
@@ -13,7 +13,7 @@ const Register = (props) => {
   
     if (isLoggedIn) return null;
 
-    const {setAuthWindow} = props;
+    // const {setAuthWindow} = props;
 
 
     const handleClose = () => {

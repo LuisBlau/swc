@@ -71,7 +71,7 @@ class Lobby extends Component {
                         <LobbyHeader switchContent={this.switchContent} />
                         <LobbyTableRouterHolder />
                           {
-                            (this.state.currentContent === 'cashgames' && <CashGames onNavigate={this.props.onNavigate} />) ||
+                            (this.state.currentContent === 'cashgames' && <CashGames onNavigate={this.props.onNavigate} setTableID={this.props.setTableID} />) ||
                             (this.state.currentContent === 'settings' && <Settings />) ||
                             (this.state.currentContent === 'accountinfo' && <AccountInfo />) ||
                             (this.state.currentContent === 'cashier' && <Cashier />)

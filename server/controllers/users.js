@@ -79,3 +79,28 @@ exports.getAllUsers = async (req, res) => {
     res.status(500).json({ msg: 'Internal server error' });
   }
 };
+
+exports.getLeaderboard = async (req, res) => {
+  try {
+    const users = await User.find()
+    .sort({ chipsAmount: -1 }) // Sort by date in descending order (most recent first)
+    .limit(5); // Limit the result to 5 records;;
+    res.status(200).json(users);
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ msg: 'Internal server error' });
+  }
+};
+
+// Define the GetCustomersCount route handler function
+exports.GetCustomersCount = async (req, res) => {
+  try {
+    // Use the User model or any other relevant model to fetch and count customers
+    const customerCount = await User.countDocuments(); // Example: Count users with role 'customer' -- await User.countDocuments({ role: 'customer' })
+    
+    res.status(200).json({ count: customerCount });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ msg: 'Internal server error' });
+  }
+};

@@ -39,3 +39,16 @@ console.log(req.body);
     }
   }
 };
+
+
+exports.GetTablesCount = async (req, res) => {
+  try {
+    // Use the User model or any other relevant model to fetch and count tables
+    const tableCount = await Table.countDocuments(); // Example: Count tables with type 'table' -- await Table.countDocuments({ type: 'table' })
+    
+    res.status(200).json({ count: tableCount });
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).json({ msg: 'Internal server error' });
+  }
+};

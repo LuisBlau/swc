@@ -1,10 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react';
 import Axios from 'axios';
-import MainLayout from './layouts/_MainLayout';
+// import MainLayout from './layouts/_MainLayout';
 // import LoadingScreen from './components/loading/LoadingScreen';
 import Spinner from './pages/Spinner';
 import globalContext from './context/global/globalContext';
-import Routes from './components/routing/Routes';
+// import Routes from './components/routing/Routes';
 import contentContext from './context/content/contentContext';
 import Text from './components/typography/Text';
 import modalContext from './context/modal/modalContext';
@@ -17,10 +17,11 @@ import Play from './pages/Play';
 
 const App = () => {
   const [currentPage, setCurrentPage] = useState("lobby");
+  const [tableID, setTableID] = useState(null);
   const { isLoading, chipsAmount, setChipsAmount, setIsLoading } = useContext(
     globalContext,
   );
-  const { getLocalizedString } = useContext(contentContext);
+  // const { getLocalizedString } = useContext(contentContext);
   const { openModal, closeModal } = useContext(modalContext);
   const { isLoading: contentIsLoading } = useContext(contentContext);
 
@@ -76,9 +77,9 @@ const App = () => {
       {isLoading || contentIsLoading ? (
         <Spinner />
       ) : (
-          currentPage === 'lobby'? <Lobby onNavigate={setCurrentPage} />: '' ||
+          currentPage === 'lobby'? <Lobby onNavigate={setCurrentPage} setTableID={setTableID} />: '' ||
           currentPage === 'game'? <Game onNavigate={setCurrentPage} /> : '' ||
-          currentPage === 'play'? <Play onNavigate={setCurrentPage} />: ''
+          currentPage === 'play'? <Play onNavigate={setCurrentPage} tableID={tableID} />: ''
       )}
       {config.isProduction && <GoogleAnalytics />}
     </>

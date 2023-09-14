@@ -22,18 +22,17 @@ export const OverviewLatestProducts = (props) => {
 
   return (
     <Card sx={sx}>
-      <CardHeader title="Latest Products" />
+      <CardHeader title="Leader Board" />
       <List>
         {products.map((product, index) => {
           const hasDivider = index < products.length - 1;
-          const ago = formatDistanceToNow(product.updatedAt);
 
           return (
             <ListItem
               divider={hasDivider}
-              key={product.id}
+              key={product._id}
             >
-              <ListItemAvatar>
+              {/* <ListItemAvatar>
                 {
                   product.image
                     ? (
@@ -58,11 +57,11 @@ export const OverviewLatestProducts = (props) => {
                       />
                     )
                 }
-              </ListItemAvatar>
+              </ListItemAvatar> */}
               <ListItemText
                 primary={product.name}
                 primaryTypographyProps={{ variant: 'subtitle1' }}
-                secondary={`Updated ${ago} ago`}
+                secondary={`${product.chipsAmount} Chips`}
                 secondaryTypographyProps={{ variant: 'body2' }}
               />
               <IconButton edge="end">
@@ -85,6 +84,7 @@ export const OverviewLatestProducts = (props) => {
           )}
           size="small"
           variant="text"
+          onClick={() => {window.location.href = "/customers";}}
         >
           View all
         </Button>

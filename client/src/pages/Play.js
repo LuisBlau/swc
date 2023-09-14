@@ -16,11 +16,11 @@ import { InfoPill } from '../components/game/InfoPill';
 import { GameUI } from '../components/game/GameUI';
 import { GameStateInfo } from '../components/game/GameStateInfo';
 import PokerCard from '../components/game/PokerCard';
-import contentContext from '../context/content/contentContext';
+// import contentContext from '../context/content/contentContext';
 import GameHeader from '../components/layout/GameHeader';
 
 const Play = (props, { history }) => {
-  const { onNavigate } = props;
+  const { onNavigate, tableID } = props;
   const { socket } = useContext(socketContext);
   const { openModal } = useContext(modalContext);
   const {
@@ -37,7 +37,7 @@ const Play = (props, { history }) => {
     call,
     raise,
   } = useContext(gameContext);
-  const { getLocalizedString } = useContext(contentContext);
+  // const { getLocalizedString } = useContext(contentContext);
 
   const [bet, setBet] = useState(0);
 
@@ -51,7 +51,7 @@ const Play = (props, { history }) => {
         "Reconnect",
         () => window.location.reload(),
       );
-    socket && joinTable(1);
+    socket && joinTable(tableID);
     return () => leaveTable();
     // eslint-disable-next-line
   }, [socket]);

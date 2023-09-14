@@ -3,7 +3,8 @@ const router = express.Router();
 // const { check } = require('express-validator');
 const {
   getAllTables,
-  createTable
+  createTable,
+  GetTablesCount
 } = require('../../controllers/tables');
 
 router.post(
@@ -14,6 +15,11 @@ router.post(
 router.post(
   '/create',
   createTable
+);
+
+router.post(
+  '/count',
+  GetTablesCount
 );
 
 module.exports = router;

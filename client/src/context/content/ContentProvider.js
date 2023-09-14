@@ -14,7 +14,7 @@ const ContentProvider = ({ children }) => {
   useEffect(() => {
     setIsLoading(true);
 
-    fetchContent();
+    // fetchContent();
 
     setIsLoading(false);
     // eslint-disable-next-line
