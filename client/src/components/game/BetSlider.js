@@ -7,7 +7,7 @@ export const BetSlider = ({ currentTable, seatId, bet, setBet }) => (
     <BetSliderInput
       type="range"
       style={{ width: '100%' }}
-      step="10"
+      step="0.5"
       min={
         currentTable.minBet >= currentTable.callAmount
           ? currentTable.minBet

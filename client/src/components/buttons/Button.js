@@ -7,8 +7,10 @@ const Button = styled.button`
   box-shadow: inset 0 0.1em 0 #ed8488;
   color: #fff;
   font-size: 20px;
+  width: 160px;
   height: 45px;
   margin: 0 12px;
+  padding: 10px;
   outline: none;
   transition: background-color .4s ease-out,color .4s ease-out;
   cursor: pointer;
@@ -21,18 +23,21 @@ const Button = styled.button`
   &:hover,
   &:active {
     background-color: linear-gradient(180deg,#e83a40 0,#a8282e);
+    border: 2px solid #ed9165;
     color: white;
   }
 
   &:focus {
     outline: none;
-    border: 2px solid ${(props) => props.theme.colors.primaryCtaDarker};
+    border: 2px solid #ed9165;
     color: white;
   }
 
   &:disabled {
-    background-color: grey;
-    border-color: 2px solid grey;
+    background: linear-gradient(180deg,#535353 0,#1e1d1d);
+    box-shadow: inset 0 0.1em 0 #535353;
+    border: none;
+    cursor: not-allowed;
   }
 
   ${(props) =>
@@ -67,75 +72,6 @@ const Button = styled.button`
         color: white;
       }
     `}
-
-  ${(props) =>
-    props.secondary &&
-    css`
-      color: ${(props) => props.theme.colors.primaryCta};
-
-      &,
-      &:visited {
-        background-color: transparent;
-        color: white};
-      }
-
-      &:hover,
-      &:active {
-        background-color: transparent;
-        color: ${(props) => props.theme.colors.primaryCtaDarker};
-      }
-
-      &:focus {
-        outline: none;
-        color: ${(props) => props.theme.colors.primaryCtaDarker};
-      }
-
-      &:disabled {
-        border: 2px solid grey;
-        background-color: grey;
-        color: white;
-      }
-    `}
-  
-  ${(props) =>
-    props.large &&
-    css`
-      font-size: 1.6rem;
-      line-height: 1.6rem;
-      min-width: 250px;
-      padding: 1rem 2rem;
-    `}
-  
-  ${(props) =>
-    props.small &&
-    css`
-      font-size: 1.1rem;
-      line-height: 1.1rem;
-      min-width: 125px;
-      padding: 0.5rem 1rem;
-    `}
-  
-  ${(props) =>
-    props.fullWidth &&
-    css`
-      width: 100%;
-    `}
-
-    @media screen and (max-width: 1024px) {
-    ${(props) =>
-      props.large &&
-      css`
-        font-size: 1.4rem;
-        line-height: 1.4rem;
-        min-width: 250px;
-        padding: 0.75rem 1.5rem;
-      `}
-
-    ${(props) =>
-      (props.fullWidthOnMobile || props.fullWidth) &&
-      css`
-        width: 100%;
-      `}
   }
 `;
 

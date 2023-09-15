@@ -47,7 +47,7 @@ const Play = (props, { history }) => {
         () => (
           <Text>Waiting...</Text>
         ),
-        "Connection Lost",
+        "You've been disconnected!",
         "Reconnect",
         () => window.location.reload(),
       );
@@ -78,7 +78,12 @@ const Play = (props, { history }) => {
               scale="0.65"
               style={{ zIndex: '50' }}
             >
-              <Button small secondary onClick={leaveTable}>
+              <Button small secondary onClick={() =>
+                {
+                  leaveTable();
+                  onNavigate('lobby');
+                }
+              }>
                 Leave Table
               </Button>
             </PositionedUISlot>

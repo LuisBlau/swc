@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const BetSliderWrapper = styled.div({
-  gridColumn: '1 / 5',
+  gridColumn: '1 / 4',
   display: 'flex',
   justifyContent: 'center',
   alignItems: 'center',

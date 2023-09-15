@@ -50,9 +50,9 @@ export const OverviewLatestOrders = (props) => {
                 <TableCell>
                   Amount
                 </TableCell>
-                <TableCell sortDirection="desc">
+                {/* <TableCell sortDirection="desc">
                   Date
-                </TableCell>
+                </TableCell> */}
                 <TableCell>
                   Status
                 </TableCell>
@@ -66,7 +66,8 @@ export const OverviewLatestOrders = (props) => {
                     key={order._id}
                   >
                     <TableCell sx={{
-                      textTransform: 'uppercase'
+                      textTransform: 'uppercase',
+                      color: order.type=="deposit" ? "#4ff461" : order.type=="transfer"?"#38b3f0":"#f04438"
                     }}>
                       {order.type}
                     </TableCell>
@@ -82,9 +83,9 @@ export const OverviewLatestOrders = (props) => {
                     <TableCell>
                       {order.amount}
                     </TableCell>
-                    <TableCell>
+                    {/* <TableCell>
                       -
-                    </TableCell>
+                    </TableCell> */}
                     <TableCell>
                       <SeverityPill color={statusMap[order.status]}>
                         {order.status}

@@ -27,9 +27,9 @@ const Deposit = (props) => {
                   <div className="name">Swc</div>
                   <div className="ico" />
                 </div>
-                <div className="panel sideshift-button payment-method-item">
+                {/* <div className="panel sideshift-button payment-method-item">
                   <div className="ico" />
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="info-block">
@@ -97,7 +97,7 @@ const Deposit = (props) => {
                           <div className="simple-button-content">Copy Address</div>
                         </div>
                       </div>
-                      <div className="payment-button-wrapper toggle-address-button-wrapper">
+                      {/* <div className="payment-button-wrapper toggle-address-button-wrapper">
                         <div
                           className="panel simple-button payment-button toggle-address-button"
                           tabIndex={0}
@@ -106,7 +106,7 @@ const Deposit = (props) => {
                             Use Old Format
                           </div>
                         </div>
-                      </div>
+                      </div> */}
                       <div className="sc-exchange-rate">
                         Deposits are credited after 1 confirmation.
                       </div>
@@ -131,8 +131,7 @@ const Deposit = (props) => {
                     </div>
                     <div className="DepositBottomBlock">
                       <div className="sc-exchange-rate new-addres-info">
-                        A new address is provided for each deposit. Please do not
-                        send to an old address.
+                        Please do not send to a wrong address.
                       </div>
                     </div>
                   </div>

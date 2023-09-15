@@ -66,7 +66,7 @@ class LobbyMenu extends Component {
                         <div className="menu-item-content">Cashier</div>
                         <div className="menu-item-ico" />
                       </div>
-                      <div className="panel menu-item lobby-menu-item about">
+                      <div className="panel menu-item lobby-menu-item about" onClick={()=>this.props.switchContent('about')}>
                         <div className="menu-item-content">About</div>
                         <div className="menu-item-ico" />
                       </div>

@@ -118,7 +118,7 @@ export const CustomersTable = (props) => {
                         alignItems="center"
                         direction="row"
                         spacing={2}
-                        color="#4ff461"
+                        color={customer.type=="deposit" ? "#4ff461" : customer.type=="transfer"?"#38b3f0":"#f04438"}
                         textTransform="uppercase"
                       >
                         <Typography variant="subtitle2">

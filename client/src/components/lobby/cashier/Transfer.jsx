@@ -1,6 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
+import Axios from 'axios';
+import globalContext from '../../../context/global/globalContext';
+import { set } from 'lodash';
 
 const Transfer = (props) => {
+  const { chipsAmount, userName, setChipsAmount } = useContext(globalContext);
+  const playerNameRef = useRef(null);
+  const transferAmountRef = useRef('0');
+  const passwordRef = useRef(null);
+
+  const handleTransfer = async() => {
+    const playerName = playerNameRef.current.value;
+    const transferAmount = transferAmountRef.current.value;
+    const password = passwordRef.current.value;
+    
+    if(!playerName || !transferAmount || !password) return;
+    if(transferAmount > chipsAmount) return;
+    setChipsAmount(chipsAmount - transferAmount);
+    
+    try {
+      const res = await Axios.post( process.env.REACT_APP_SERVER_URI + '/api/transactions/transfer', {
+        from:userName,
+        to:playerName,
+        currency: "uBTC",
+        amount:transferAmount,
+        password:password
+      });
+    } catch (error) {
+      // console.error(error);
+    }
+  }
   return(
     <div className="pw-tab pw-cashier-transfer">
       <div
@@ -43,6 +72,7 @@ const Transfer = (props) => {
                           placeholder="Player's Username"
                           type="text"
                           defaultValue=""
+                          ref={playerNameRef}
                         />
                       </div>
                     </div>
@@ -66,6 +96,7 @@ const Transfer = (props) => {
                           placeholder="Amount"
                           type="text"
                           defaultValue=""
+                          ref={transferAmountRef}
                         />
                       </div>
                     </div>
@@ -78,7 +109,7 @@ const Transfer = (props) => {
                 <div className="player-balance-block uBTC">
                   <span>
                     <span className="field"> Available balance: </span>
-                    <span className="value">0 uBTC</span>
+                    <span className="value">{chipsAmount} uBTC</span>
                   </span>
                 </div>
                 <div className="transfer-method-password">
@@ -95,6 +126,7 @@ const Transfer = (props) => {
                           className="input-field"
                           type="password"
                           defaultValue=""
+                          ref={passwordRef}
                         />
                       </div>
                     </div>
@@ -105,7 +137,7 @@ const Transfer = (props) => {
                 </div>
                 <div className="buttons-holder">
                   <div className="panel simple-button transfer-button">
-                    <div className="simple-button-content">Transfer</div>
+                    <div className="simple-button-content" onClick={()=>handleTransfer()}>Transfer</div>
                   </div>
                 </div>
                 <div className="transfer-warning-text">

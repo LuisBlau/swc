@@ -3,6 +3,7 @@ const router = express.Router();
 // const { check } = require('express-validator');
 const {
   getAllTransactions,
+  getHistory,
   getRecentTransactions,
   requestDeposit,
   requestWithdraw,
@@ -12,6 +13,11 @@ const {
 router.post(
   '/all',
   getAllTransactions
+);
+
+router.post(
+  '/history',
+  getHistory
 );
 
 router.post(

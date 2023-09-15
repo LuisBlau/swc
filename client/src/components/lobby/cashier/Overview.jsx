@@ -1,6 +1,8 @@
-import React from 'react';
-
+import React, { useState, useEffect, useContext } from 'react';
+import globalContext from '../../../context/global/globalContext';
 const Overview = (props) => {
+  const { chipsAmount } = useContext(globalContext);
+
   return(
     <div className="pw-tab pw-cashier-status">
       <div
@@ -65,7 +67,7 @@ const Overview = (props) => {
                     style={{ transform: "translate(0px, 0px) translateZ(0px)" }}
                   >
                     <div className="money-items">
-                      <div className="panel money-item scroll-prevent-default KRILL">
+                      <div className="panel money-item scroll-prevent-default CHIPS">
                         <div className="panel cell money-type-icon first-item">
                           <div className="cell-content">
                             <div className="cell-content-text" />
@@ -73,12 +75,12 @@ const Overview = (props) => {
                         </div>
                         <div className="panel cell money-type">
                           <div className="cell-content">
-                            <div className="cell-content-text">Krill</div>
+                            <div className="cell-content-text">uBTC</div>
                           </div>
                         </div>
                         <div className="panel cell available">
                           <div className="cell-content">
-                            <div className="cell-content-text">0</div>
+                            <div className="cell-content-text">{chipsAmount}</div>
                           </div>
                         </div>
                         <div className="panel cell in-game">
@@ -88,7 +90,7 @@ const Overview = (props) => {
                         </div>
                         <div className="panel cell total">
                           <div className="cell-content">
-                            <div className="cell-content-text">0</div>
+                            <div className="cell-content-text">{chipsAmount}</div>
                           </div>
                         </div>
                       </div>

@@ -1,6 +1,34 @@
-import React from 'react';
-
+import React, { useState, useEffect, useContext, useRef } from 'react';
+import Axios from 'axios';
+import globalContext from '../../../context/global/globalContext';
 const History = (props) => {
+  const { userName } = useContext(globalContext);
+  const moneyTypeRef = useRef("");
+  const transactionTypeRef = useRef("");
+  const [history, setHistory] = useState([]);
+
+  const handleHistory = async() => {
+    const moneyType = moneyTypeRef.current.value;
+    const transactionType = transactionTypeRef.current.value;
+        
+    if(!userName) return;
+
+    try {
+      const res = await Axios.post( process.env.REACT_APP_SERVER_URI + '/api/transactions/history', {
+        name:userName,
+        currency:moneyType,
+        type: transactionType
+      });
+      setHistory(res.data);
+    } catch (error) {
+      // console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    handleHistory();
+  }, []);
+
   return(
     <div className="pw-tab pw-cashier-history">
       <div
@@ -27,7 +55,7 @@ const History = (props) => {
                   <div className="filter-value">
                     <div className="filter-value-content">
                       <div className="select-field filter-component">
-                        <select className="select-box">
+                        <select className="select-box" ref={moneyTypeRef}  onChange={handleHistory}>
                           <option
                             className="select-box-option none"
                             disabled=""
@@ -36,12 +64,8 @@ const History = (props) => {
                           >
                             Money Type
                           </option>
-                          <option className="select-box-option" value="" />
-                          <option className="select-box-option" value={82}>
+                          <option className="select-box-option" value="uBTC">
                             uBTC
-                          </option>
-                          <option className="select-box-option" value={102}>
-                            uBCH
                           </option>
                         </select>
                       </div>
@@ -52,7 +76,7 @@ const History = (props) => {
                   <div className="filter-value">
                     <div className="filter-value-content">
                       <div className="select-field filter-component">
-                        <select className="select-box">
+                        <select className="select-box" ref={transactionTypeRef} onChange={handleHistory}>
                           <option
                             className="select-box-option none"
                             disabled=""
@@ -61,43 +85,21 @@ const History = (props) => {
                           >
                             Transaction Type
                           </option>
-                          <option className="select-box-option" value="" />
-                          <option className="select-box-option" value="tt-deposit">
+                          <option className="select-box-option" value="deposit">
                             Deposit
                           </option>
-                          <option className="select-box-option" value="tt-cashout">
+                          <option className="select-box-option" value="withdraw">
                             Withdraw
                           </option>
-                          <option className="select-box-option" value="tt-transfer">
+                          <option className="select-box-option" value="transfer">
                             Transfer
-                          </option>
-                          <option className="select-box-option" value="tt-rakeback">
-                            Rakeback
-                          </option>
-                          <option
-                            className="select-box-option"
-                            value="tt-affiliate-payment"
-                          >
-                            Affiliate Payment
-                          </option>
-                          <option
-                            className="select-box-option"
-                            value="tt-system-adjustment"
-                          >
-                            System Credit
-                          </option>
-                          <option
-                            className="select-box-option"
-                            value="tt-system-adjustment-rev"
-                          >
-                            System Debit
                           </option>
                         </select>
                       </div>
                     </div>
                   </div>
                 </div>
-                <div className="date-block">
+                {/* <div className="date-block">
                   <div className="filter-block datepicker-filter start-date">
                     <div className="filter-value">
                       <div className="filter-value-content">
@@ -145,7 +147,7 @@ const History = (props) => {
                       </div>
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="history-block">
@@ -158,7 +160,7 @@ const History = (props) => {
                 </div>
                 <div className="panel header-cell date">
                   <div className="cell-content">
-                    <div className="cell-text">Date / Time</div>
+                    <div className="cell-text">Currency</div>
                     <div className="cell-ico" />
                   </div>
                 </div>
@@ -180,11 +182,11 @@ const History = (props) => {
                     <div className="cell-ico" />
                   </div>
                 </div>
-                <div className="panel header-cell action">
+                {/* <div className="panel header-cell action">
                   <div className="cell-content">
                     <div className="cell-text">Action</div>
                   </div>
-                </div>
+                </div> */}
               </div>
               <div className="history-list">
                 <div
@@ -200,7 +202,41 @@ const History = (props) => {
                   <div
                     className="scroll-wrapper"
                     style={{ transform: "translate(0px, 0px) translateZ(0px)" }}
-                  />
+                  >
+                    <div className="history-items">
+                    {history.map((item, index) => {
+                      return (
+                      <div className="panel history-item scroll-prevent-default CHIPS" key={item._id}>
+                        <div className="panel cell history-type-icon first-item">
+                          <div className="cell-content">
+                            <div className="cell-content-text">{(++index).toString()}</div>
+                          </div>
+                        </div>
+                        <div className="panel cell history-type">
+                          <div className="cell-content">
+                            <div className="cell-content-text">{item.currency}</div>
+                          </div>
+                        </div>
+                        <div className="panel cell available">
+                          <div className="cell-content">
+                            <div className="cell-content-text">{item.type}</div>
+                          </div>
+                        </div>
+                        <div className="panel cell in-game">
+                          <div className="cell-content">
+                            <div className="cell-content-text">{item.status}</div>
+                          </div>
+                        </div>
+                        <div className="panel cell total">
+                          <div className="cell-content">
+                            <div className="cell-content-text">{item.amount}</div>
+                          </div>
+                        </div>
+                      </div>
+                      )
+                    })}
+                    </div>
+                  </div>
                   <div
                     className="iScrollVerticalScrollbar iScrollLoneScrollbar"
                     style={{
@@ -228,16 +264,16 @@ const History = (props) => {
                         width: "100%",
                         transitionDuration: "0ms",
                         display: "none",
-                        height: 358,
+                        height: 258,
                         transform: "translate(0px, 0px) translateZ(0px)"
                       }}
                     />
                   </div>
                 </div>
               </div>
-              <div className="pw-list-spinner-holder">
+              {/* <div className="pw-list-spinner-holder">
                 <div className="poker-widget-spinner" />
-              </div>
+              </div> */}
             </div>
             <div className="buttons-holder" />
           </div>

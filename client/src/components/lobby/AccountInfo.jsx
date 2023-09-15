@@ -1,9 +1,11 @@
-import React from 'react';
-
+import React, { useState, useEffect, useContext } from 'react';
+import globalContext from '../../context/global/globalContext';
 const AccountInfo = (props) => {
   const { 
     onNavigate
   } = props;
+  const { chipsAmount, userName, email } = useContext(globalContext);
+
   return(
     <div className="lobby-content">
       <div className="page lobby-page page-forward">
@@ -35,12 +37,12 @@ const AccountInfo = (props) => {
                       <div className="account-info-data-panel personal-info">
                         <div className="account-info-field">
                           <div className="account-info-field-label">Nick:</div>
-                          <div className="account-info-field-value">Player1</div>
+                          <div className="account-info-field-value">{userName}</div>
                         </div>
                         <div className="account-info-field">
                           <div className="account-info-field-label">E-mail:</div>
                           <div className="account-info-field-value">
-                            testuser@gmail.com
+                            {email}
                           </div>
                         </div>
                       </div>
@@ -53,38 +55,38 @@ const AccountInfo = (props) => {
                         </div>
                         <div className="rating-panel">
                           <div className="rating-item" />
-                          <div className="rating-item empty" />
-                          <div className="rating-item empty" />
-                          <div className="rating-item empty" />
+                          <div className="rating-item" />
+                          <div className="rating-item" />
+                          <div className="rating-item" />
                           <div className="rating-item empty" />
                         </div>
-                        <div className="account-info-field">
+                        {/* <div className="account-info-field">
                           <div className="account-info-field-label">
                             Krill Wave:
                           </div>
                           <div className="account-info-field-value">New Seal</div>
-                        </div>
+                        </div> */}
                       </div>
                       <div className="account-info-data-panel money-block real-money-block">
                         <div className="currency-list">
                           <div className="account-info-field currency CHIPS">
                             <div className="account-info-field-label">uBTC</div>
-                            <div className="account-info-field-value">0</div>
+                            <div className="account-info-field-value">{chipsAmount}</div>
                           </div>
-                          <div className="account-info-field currency BCHCHIPS">
+                          {/* <div className="account-info-field currency BCHCHIPS">
                             <div className="account-info-field-label">uBCH</div>
                             <div className="account-info-field-value">0</div>
-                          </div>
+                          </div> */}
                         </div>
                       </div>
-                      <div className="account-info-data-panel money-block currencies-block">
+                      {/* <div className="account-info-data-panel money-block currencies-block">
                         <div className="currency-list">
                           <div className="account-info-field currency KRILL">
                             <div className="account-info-field-label">Krill</div>
                             <div className="account-info-field-value">0</div>
                           </div>
                         </div>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                   <div

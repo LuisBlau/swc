@@ -72,7 +72,7 @@ exports.register = async (req, res) => {
 // Define the getAllUsers route handler function
 exports.getAllUsers = async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find().sort({ name: 1});
     res.status(200).json(users);
   } catch (error) {
     console.error(error.message);

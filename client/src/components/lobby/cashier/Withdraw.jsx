@@ -1,6 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
+import Axios from 'axios';
+import globalContext from '../../../context/global/globalContext';
 
 const Withdraw = (props) => {
+  const { chipsAmount, setChipsAmount, userName } = useContext(globalContext);
+  const bitcoinAddressRef = useRef(null);
+  const withdrawalAmountRef = useRef('0');
+  const passwordRef = useRef(null);
+
+  const handleWithdraw = async() => {
+    const bitcoinAddress = bitcoinAddressRef.current.value;
+    const withdrawalAmount = withdrawalAmountRef.current.value;
+    const password = passwordRef.current.value;
+        
+    if(!bitcoinAddressRef || !withdrawalAmountRef || !password) return;
+    if(withdrawalAmountRef > chipsAmount) return;
+    setChipsAmount(chipsAmount - withdrawalAmountRef);
+
+    try {
+      const res = await Axios.post( process.env.REACT_APP_SERVER_URI + '/api/transactions/withdraw', {
+        from:userName,
+        to:bitcoinAddress,
+        currency: "uBTC",
+        amount:withdrawalAmount,
+        password:password
+      });
+    } catch (error) {
+      // console.error(error);
+    }
+  }
+  
   return(
     <div className="pw-tab pw-cashier-cashout">
       <div
@@ -46,6 +75,7 @@ const Withdraw = (props) => {
                               placeholder="Address"
                               type="text"
                               defaultValue=""
+                              ref={bitcoinAddressRef}
                             />
                           </div>
                         </div>
@@ -68,8 +98,9 @@ const Withdraw = (props) => {
                                 tabIndex={0}
                                 className="input-field"
                                 placeholder="Amount"
-                                type="text"
+                                type="number"
                                 defaultValue=""
+                                ref={withdrawalAmountRef}
                               />
                             </div>
                           </div>
@@ -83,7 +114,7 @@ const Withdraw = (props) => {
                         <div className="player-balance">
                           <span>
                             <span className="field"> Available balance: </span>
-                            <span className="value">0 uBTC</span>
+                            <span className="value">{chipsAmount} uBTC</span>
                           </span>
                         </div>
                         <div className="min-amount">
@@ -93,7 +124,7 @@ const Withdraw = (props) => {
                           </span>
                         </div>
                       </div>
-                      <div className="priority-block">
+                      {/* <div className="priority-block">
                         <div className="header-block priority-field--header">
                           <div className="header-block-content">
                             <div className="header-block-text">
@@ -131,7 +162,7 @@ const Withdraw = (props) => {
                             <div className="error-content" />
                           </div>
                         </div>
-                      </div>
+                      </div> */}
                       <div className="password-block">
                         <div className="header-block password-field--header">
                           <div className="header-block-content">
@@ -147,7 +178,9 @@ const Withdraw = (props) => {
                                 className="input-field"
                                 placeholder=""
                                 type="password"
-                                defaultValue="Swcpoker921$"
+                                defaultValue=""
+                                autoComplete="off"
+                                ref={passwordRef}
                               />
                             </div>
                           </div>
@@ -164,7 +197,7 @@ const Withdraw = (props) => {
                         className="panel simple-button payment-button submit"
                         tabIndex={0}
                       >
-                        <div className="simple-button-content">Submit</div>
+                        <div className="simple-button-content" onClick={()=>handleWithdraw()}>Submit</div>
                       </div>
                     </div>
                   </div>

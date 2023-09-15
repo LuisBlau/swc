@@ -1,6 +1,35 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const LobbyFooter = (props) => {
+  const [currentTime, setCurrentTime] = useState('');
+
+  useEffect(() => {
+    // Function to format the time as HH:MM AM/PM
+    const formatTime = (date) => {
+      const hours = date.getHours();
+      const minutes = date.getMinutes();
+      const ampm = hours >= 12 ? 'PM' : 'AM';
+      const formattedHours = hours % 12 || 12; // Convert to 12-hour format
+      const formattedMinutes = minutes < 10 ? `0${minutes}` : minutes;
+      return `${formattedHours}:${formattedMinutes} ${ampm}`;
+    };
+
+    // Function to update the current time
+    const updateCurrentTime = () => {
+      const now = new Date();
+      const formattedTime = formatTime(now);
+      setCurrentTime(formattedTime);
+    };
+
+    // Update the current time every 30 seconds
+    const intervalId = setInterval(updateCurrentTime, 30000);
+
+    // Initialize the current time
+    updateCurrentTime();
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(intervalId);
+  }, []);
+
   return(
     <div className="lobby-footer">
       <div className="server-connection-status">
@@ -8,7 +37,7 @@ const LobbyFooter = (props) => {
           <div className="server-connection-status-item item-1 active" />
           <div className="server-connection-status-item item-2 active" />
           <div className="server-connection-status-item item-3 active" />
-          <div className="server-connection-status-item item-4" />
+          <div className="server-connection-status-item item-4 active" />
           <div className="server-connection-status-item item-5" />
         </div>
         <div className="server-connection-status-disconnect-box">
@@ -18,15 +47,15 @@ const LobbyFooter = (props) => {
       </div>
       <div className="time-container">
         <div className="time-container-content">
-          Time 09:57 PM
+          Time {currentTime}
         </div>
       </div>
-      <div className="revision">v 6.9.9.1</div>
+      <div className="revision">v 8.1.9.6</div>
       <div className="footer-lobby-menu-buttons">
         <div className="panel button footer-button footer-chat-button has-unread-messages">
           <div className="button-content">
             <div className="footer-button-icon">&nbsp;</div>
-            <div className="footer-button-value">28</div>
+            <div className="footer-button-value">0</div>
           </div>
         </div>
         <div
@@ -107,376 +136,6 @@ const LobbyFooter = (props) => {
                       fuck tourttes fuck{" "}
                     </span>
                     <span className="chat-time">21:27</span>
-                  </div>
-                  <div className="chat-message dealer-message clickable">
-                    <span className="chat-author">
-                      Action Request:
-                    </span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 255, 255)" }}
-                    >
-                      1/1 Openface Chinese Pineapple Progressive,
-                      Cutlass #1
-                    </span>
-                    <span className="chat-time">21:30</span>
-                  </div>
-                  <div className="chat-message admin-message clickable">
-                    <span className="chat-author">System:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 255, 255)" }}
-                    >
-                      The Mini Deep Satellite [3 Seats GTD] - 10
-                      minutes left to register!
-                    </span>
-                    <span className="chat-time">21:35</span>
-                  </div>
-                  <div className="chat-message dealer-message clickable">
-                    <span className="chat-author">
-                      Action Request:
-                    </span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 255, 255)" }}
-                    >
-                      0.25/0.25 Openface Chinese 2-7 Pineapple,
-                      Attard #1
-                    </span>
-                    <span className="chat-time">21:41</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">
-                      ingermort:
-                    </span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(107, 140, 255)" }}
-                    >
-                      who is tourttes
-                    </span>
-                    <span className="chat-time">21:43</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">chug:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 140, 0)" }}
-                    >
-                      FJB
-                    </span>
-                    <span className="chat-time">21:45</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">USALOVE:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 140, 0)" }}
-                    >
-                      Have you been sleeping ok, Pman?
-                    </span>
-                    <span className="chat-time">21:45</span>
-                  </div>
-                  <div className="chat-message dealer-message clickable">
-                    <span className="chat-author">
-                      Action Request:
-                    </span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 255, 255)" }}
-                    >
-                      0.10/0.20 Hold'em, No-Rake Micro Stakes #2
-                    </span>
-                    <span className="chat-time">21:45</span>
-                  </div>
-                  <div className="chat-message dealer-message clickable">
-                    <span className="chat-author">
-                      Action Request:
-                    </span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 255, 255)" }}
-                    >
-                      0.05/0.10 Hold'em, No-Rake Micro Stakes #3
-                    </span>
-                    <span className="chat-time">21:45</span>
-                  </div>
-                  <div className="chat-message admin-message clickable">
-                    <span className="chat-author">System:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 255, 255)" }}
-                    >
-                      Mini Deep Hyper Satellite [1 Seat GTD] is
-                      starting in 15 minutes
-                    </span>
-                    <span className="chat-time">21:46</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">
-                      Incognito:
-                    </span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(218, 165, 32)" }}
-                    >
-                      ^ needs 1
-                    </span>
-                    <span className="chat-time">21:47</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">USALOVE:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 140, 0)" }}
-                    >
-                      The guy was from Nebraska that had an actual
-                      bull in a car passenger seat
-                    </span>
-                    <span className="chat-time">21:47</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">USALOVE:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 140, 0)" }}
-                    >
-                      looks so weird
-                    </span>
-                    <span className="chat-time">21:47</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">USALOVE:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 140, 0)" }}
-                    >
-                      he was given a warning lol
-                    </span>
-                    <span className="chat-time">21:47</span>
-                  </div>
-                  <div className="chat-message dealer-message clickable">
-                    <span className="chat-author">
-                      Action Request:
-                    </span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 255, 255)" }}
-                    >
-                      0.10/0.20 Hold'em, No-Rake Micro Stakes #2
-                    </span>
-                    <span className="chat-time">21:50</span>
-                  </div>
-                  <div className="chat-message dealer-message clickable">
-                    <span className="chat-author">
-                      Action Request:
-                    </span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 255, 255)" }}
-                    >
-                      5/10 Hold'em, Turmeric #1
-                    </span>
-                    <span className="chat-time">21:52</span>
-                  </div>
-                  <div className="chat-message dealer-message clickable">
-                    <span className="chat-author">
-                      Action Request:
-                    </span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 255, 255)" }}
-                    >
-                      0.10/0.20 Hold'em, No-Rake Micro Stakes #2
-                    </span>
-                    <span className="chat-time">21:52</span>
-                  </div>
-                  <div className="chat-message dealer-message clickable">
-                    <span className="chat-author">
-                      Action Request:
-                    </span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 255, 255)" }}
-                    >
-                      1/2 Hold'em, Bay Leaf #1
-                    </span>
-                    <span className="chat-time">21:53</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">390CID:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(176, 224, 230)" }}
-                    >
-                      I am so glad we have secure borders, They
-                      say we do!
-                    </span>
-                    <span className="chat-time">21:53</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">USALOVE:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 140, 0)" }}
-                    >
-                      That Peter Santello video at the border is
-                      something
-                    </span>
-                    <span className="chat-time">21:53</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">390CID:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(176, 224, 230)" }}
-                    >
-                      that bull is the BULL!
-                    </span>
-                    <span className="chat-time">21:54</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">USALOVE:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 140, 0)" }}
-                    >
-                      Insane the Countries people came from and
-                      all the ID's that are thrown on the ground
-                    </span>
-                    <span className="chat-time">21:54</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">USALOVE:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 140, 0)" }}
-                    >
-                      and all the money
-                    </span>
-                    <span className="chat-time">21:54</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">USALOVE:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 140, 0)" }}
-                    >
-                      so they can lie i guess about where theyre
-                      really from
-                    </span>
-                    <span className="chat-time">21:54</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">390CID:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(176, 224, 230)" }}
-                    >
-                      All the africans?
-                    </span>
-                    <span className="chat-time">21:54</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">USALOVE:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 140, 0)" }}
-                    >
-                      Chinese
-                    </span>
-                    <span className="chat-time">21:54</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">390CID:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(176, 224, 230)" }}
-                    >
-                      comin accross
-                    </span>
-                    <span className="chat-time">21:55</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">USALOVE:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 140, 0)" }}
-                    >
-                      I thought an Israeli
-                    </span>
-                    <span className="chat-time">21:55</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">USALOVE:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 140, 0)" }}
-                    >
-                      watch the video if you get time
-                    </span>
-                    <span className="chat-time">21:55</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">390CID:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(176, 224, 230)" }}
-                    >
-                      the bull video?
-                    </span>
-                    <span className="chat-time">21:56</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">USALOVE:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 140, 0)" }}
-                    >
-                      oh lol
-                    </span>
-                    <span className="chat-time">21:56</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">USALOVE:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 140, 0)" }}
-                    >
-                      i was wondering what you meant by that sorry
-                    </span>
-                    <span className="chat-time">21:56</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">USALOVE:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 140, 0)" }}
-                    >
-                      The video about the border
-                    </span>
-                    <span className="chat-time">21:56</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">USALOVE:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 140, 0)" }}
-                    >
-                      1 sec let me find it
-                    </span>
-                    <span className="chat-time">21:56</span>
-                  </div>
-                  <div className="chat-message">
-                    <span className="chat-author">USALOVE:</span>
-                    <span
-                      className="chat-message-text"
-                      style={{ color: "rgb(255, 140, 0)" }}
-                    >
-                      just surprising to see all the ID's from the
-                      World and different currencies
-                    </span>
-                    <span className="chat-time">21:56</span>
                   </div>
                   <div className="chat-message">
                     <span className="chat-author">390CID:</span>

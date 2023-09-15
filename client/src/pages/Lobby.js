@@ -15,7 +15,7 @@ import CashGames from "../components/lobby/CashGames";
 import Settings from "../components/lobby/Settings";
 import AccountInfo from "../components/lobby/AccountInfo";
 import Cashier from "../components/lobby/Cashier";
-
+import About from "../components/lobby/About";
 class Lobby extends Component {
   constructor(props) {
     super(props);
@@ -74,7 +74,8 @@ class Lobby extends Component {
                             (this.state.currentContent === 'cashgames' && <CashGames onNavigate={this.props.onNavigate} setTableID={this.props.setTableID} />) ||
                             (this.state.currentContent === 'settings' && <Settings />) ||
                             (this.state.currentContent === 'accountinfo' && <AccountInfo />) ||
-                            (this.state.currentContent === 'cashier' && <Cashier />)
+                            (this.state.currentContent === 'cashier' && <Cashier />) ||
+                            (this.state.currentContent === 'about' && <About />)
                           }
                         <LobbyMenu switchContent={this.switchContent} />
                         <LobbyFooter />

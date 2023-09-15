@@ -1,12 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import globalContext from '../../context/global/globalContext';
 
 const CashGames = (props) => {
   const { 
     onNavigate,
     setTableID
   } = props;
-  const [tables, setTables] = useState([]);
+  const [tableDB, setTables] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { tables } = useContext(globalContext);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -26,6 +28,7 @@ const CashGames = (props) => {
         // console.log("lobby data = ", data);
         setTables(data);
         setLoading(false);
+
       } catch (error) {
         console.error(error);
       }
@@ -191,7 +194,14 @@ const CashGames = (props) => {
                         </div>
                       </div>
                     </div> */}
-                    {tables.map((item) => {
+                    {
+                    tableDB.map((item) => {
+
+                      let table = tables? tables.find((t) => t.id == item._id) : {currentNumberPlayers: '0'};
+                      if (!table) {
+                        table = {currentNumberPlayers: '0'};
+                      }
+
                       return (
                         <div key={item._id} className="table-menu-item-wrapper"  onClick={
                           () => {
@@ -238,7 +248,7 @@ const CashGames = (props) => {
                               </div>
                               <div className="cell table-players">
                                 <div className="panel cell-content">
-                                  1/{item.maxPlayers}
+                                  {table.currentNumberPlayers}/{item.maxPlayers}
                                 </div>
                               </div>
                               <div className="cell game-type">
@@ -305,7 +315,7 @@ const CashGames = (props) => {
                           </div>
                           <div className="cell table-players">
                             <div className="panel cell-content">
-                              5/5
+                              4/5
                             </div>
                           </div>
                           <div className="cell game-type">

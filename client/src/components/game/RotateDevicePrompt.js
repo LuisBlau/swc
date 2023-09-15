@@ -37,9 +37,9 @@ export const RotateDevicePrompt = () => {
         alt="Rotate your device into landscape mode"
       />
       <br />
-      <Text textAlign="center">
+      {/* <Text textAlign="center">
         {getLocalizedString('game_rotate-device-prompt')}
-      </Text>
+      </Text> */}
     </Wrapper>
   );
 };

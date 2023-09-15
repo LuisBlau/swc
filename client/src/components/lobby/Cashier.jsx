@@ -20,9 +20,9 @@ const Cashier = (props) => {
               <div className="navigation-panel back title">
                 <div className="navigation-panel-content">
                   <div className="navigation-panel-title">Cashier</div>
-                  <div className="panel navigation-panel-back">
+                  {/* <div className="panel navigation-panel-back">
                     <div className="navigation-panel-back-content">Back</div>
-                  </div>
+                  </div> */}
                   <div className="panel button refresh-button">
                     <div className="button-content" />
                   </div>

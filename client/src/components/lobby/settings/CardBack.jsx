@@ -6,12 +6,12 @@ const CardBack = (props) => {
   } = props;
   return(
     <div className="table-card-back-option">
-      <div className="panel menu-item table-card-back-option-item card-back-default select">
+      <div className="panel menu-item table-card-back-option-item card-back-default">
         <div className="menu-item-content">
           <div className="check-ico" />
         </div>
       </div>
-      <div className="panel menu-item table-card-back-option-item card-back-2">
+      <div className="panel menu-item table-card-back-option-item card-back-2 select">
         <div className="menu-item-content">
           <div className="check-ico" />
         </div>

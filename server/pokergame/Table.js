@@ -26,7 +26,7 @@ class Table {
     this.bigBlind = null;
     this.handOver = true;
     this.winMessages = [];
-    this.wentToShowdown = false;
+    this.wentToShowdown = true;
     this.sidePots = [];
     this.history = [];
   }

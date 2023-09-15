@@ -27,18 +27,30 @@ export const GameUI = ({
         bet={bet}
         setBet={setBet}
       />
-      <Button small onClick={() => raise(bet + currentTable.seats[seatId].bet)}>
-        Bet {bet}
+      <Button
+        small
+        disabled={
+          currentTable.seats[seatId].stack <= 0
+        }
+        onClick={() => {
+          if(currentTable.seats[seatId].stack <= bet)
+            raise(currentTable.seats[seatId].stack + currentTable.seats[seatId].bet); //All-in!
+          else
+            raise(bet + currentTable.seats[seatId].bet); //Raise
+        }}
+      >
+        {currentTable.seats[seatId].stack <= bet?'All-in!':'Raise'}
+        {' '}
+        {bet >= currentTable.seats[seatId].stack? '':bet}
       </Button>
-      <Button small secondary onClick={standUp}>
+      <Button small onClick={standUp}>
         Stand Up
       </Button>
-      <Button small secondary onClick={fold}>
+      <Button small onClick={fold}>
         Hold
       </Button>
       <Button
         small
-        secondary
         disabled={
           currentTable.callAmount !== currentTable.seats[seatId].bet &&
           currentTable.callAmount > 0
@@ -55,14 +67,15 @@ export const GameUI = ({
         }
         onClick={call}
       >
-        Call{' '}
+        Call
+        {/* {' '}
         {currentTable.callAmount &&
         currentTable.seats[seatId].bet < currentTable.callAmount &&
         currentTable.callAmount <= currentTable.seats[seatId].stack
           ? currentTable.callAmount - currentTable.seats[seatId].bet
-          : ''}
+          : ''} */}
       </Button>
-      <Button
+      {/* <Button
         small
         onClick={() =>
           raise(
@@ -70,9 +83,9 @@ export const GameUI = ({
           )
         }
       >
-        All-in! (
-        {currentTable.seats[seatId].stack})
-      </Button>
+        All-in!
+        ( {currentTable.seats[seatId].stack})
+      </Button> */}
     </UIWrapper>
   );
 };
