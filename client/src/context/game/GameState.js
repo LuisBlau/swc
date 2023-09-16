@@ -76,7 +76,11 @@ const GameState = ({ history, children }) => {
         setMessages([]);
       });
     }
-    return () => leaveTable();
+    return () => {
+      if(currentTableRef) {
+        leaveTable();
+      }
+    };
     // eslint-disable-next-line
   }, [socket]);
 

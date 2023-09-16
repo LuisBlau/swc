@@ -119,7 +119,6 @@ export const AddNewTable = () => {
         // Check if the response is OK
         if (!response.ok) {
           console.log(response);
-          throw new Error('Network response was not ok');
         }
   
         // Assuming the API returns the newly created table as JSON

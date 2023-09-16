@@ -43,7 +43,7 @@ export default function Home() {
                                     <h1>WELCOME TO <br />BITCOIN POKER</h1>
                                     <p>ANONYMOUS. LOW RAKE. DAILY TOURNAMENTS.</p>
                                     <div className="get-button">
-                                        <Link href="https://play-swcpoker.netlify.app" className="btn playnow">Play Now</Link>
+                                        <Link href={process.env.NEXT_PUBLIC_APP_URL} className="btn playnow">Play Now</Link>
                                         <Link href="/download" className="btn btn-download">Download</Link>
                                     </div>
                                 </div>

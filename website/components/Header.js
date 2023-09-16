@@ -361,7 +361,7 @@ export default function Header() {
                             <Menu menu={mainMenuEntries} showHome={true} setHamburgerOpen={setHamburgerOpen} />
                             <div className="get-button">
                                 <Link href="/download" className="btn btn-download">Download</Link>
-                                <Link href="https://play-swcpoker.netlify.app" className="btn btn-playnow">Play Now</Link>
+                                <Link href={process.env.NEXT_PUBLIC_APP_URL} className="btn btn-playnow">Play Now</Link>
                             </div>
                         </div>
                     </div>

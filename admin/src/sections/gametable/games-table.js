@@ -119,7 +119,7 @@ export const GamesTable = (props) => {
                         backgroundColor:"#1d2333" 
                       }}
                     >
-                      Hold'em
+                      Hold&apos;em
                     </TableCell>
                     <TableCell
                       sx={{
