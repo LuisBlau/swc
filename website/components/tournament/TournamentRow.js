@@ -15,7 +15,7 @@ function TournamentRow(props) {
             <td className="mobile-v">{props.data?.gt} {props.data?.lt}</td>
             <td>{props.data?.b / 100} + {props.data?.ef / 100}</td>
             <td>
-                <Link className="btn btn-play" href="#">Play Now</Link>
+                <Link className="btn btn-play" href={process.env.NEXT_PUBLIC_APP_URL}>Play Now</Link>
             </td>
         </tr>
     )

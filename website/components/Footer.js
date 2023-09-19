@@ -54,7 +54,7 @@ export default function Footer() {
                                 </p>
                             </div>
                             <div className="get-button">
-                                <Link rel="nofollow" href="/play" className="btn playnow">Play Now</Link>
+                                <Link rel="nofollow" href={process.env.NEXT_PUBLIC_APP_URL} className="btn playnow">Play Now</Link>
                                 <Link rel="nofollow" href="/download" className="btn btn-download">Download</Link>
                             </div>
                         </div>

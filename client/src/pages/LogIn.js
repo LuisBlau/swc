@@ -18,10 +18,21 @@ const LogIn = (props) => {
     const {setAuthWindow} = props;
     const [authed, setAuthed] = useState(false);
     const [closed, setClosed] = useState(authed);
+
+    // const { getLocalizedString } = useContext(contentContext);
+    const { login, isLoggedIn } = useContext(authContext);
+
+    useScrollToTopOnPageLoad();
+
+    const emailRef = useRef(null);
+    const passwordRef = useRef(null);
+    const rememberMeRef = useRef(true);
+
     const handleAuth = (e) => {
         e.preventDefault();
         const email = emailRef.current.value;
         const password = passwordRef.current.value;
+        const rememberMe = rememberMeRef.current.value;
         email &&
             password &&
             email.length > 0 &&
@@ -32,14 +43,6 @@ const LogIn = (props) => {
     const handleClose = () => {
         setClosed(true);
     }
-
-    // const { getLocalizedString } = useContext(contentContext);
-    const { login, isLoggedIn } = useContext(authContext);
-
-    useScrollToTopOnPageLoad();
-
-    const emailRef = useRef(null);
-    const passwordRef = useRef(null);
 
     if (isLoggedIn) return null;
 
@@ -82,11 +85,12 @@ const LogIn = (props) => {
                     wfd-id="id1"
                     />
                     <div className="remember-me checkbox-field login-form-checkbox-field">
-                    <div
-                        className="panel simple-check-box field-value"
-                        tabIndex={0}
-                    />
-                    <div className="field-label">Remember Me</div>
+                        <input type="checkbox"
+                            className="panel simple-check-box field-value"
+                            tabIndex={0}
+                            ref={rememberMeRef}
+                        />
+                        Remember Me
                     </div>
                 </div>
                 <div className="language-selector-holder">
