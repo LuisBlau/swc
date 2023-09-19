@@ -6,3 +6,6 @@ node_modules
 
 **/.next
 **/build
+
+server/.env.development
+server/.env.production
