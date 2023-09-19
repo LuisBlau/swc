@@ -117,7 +117,7 @@ export const AddNewTable = () => {
       }
       if (!maxPlayers || isNaN(maxPlayers) || maxPlayers < 2 || maxPlayers > 5) {
         // Max Players should be a number between 2 and 5
-        alert('Max Players should be a number between 2 and 10.');
+        alert('Max Players should be a number between 2 and 5.');
         return;
       }
       if (!limit || isNaN(limit) || limit < 100 || limit > 100000) {
