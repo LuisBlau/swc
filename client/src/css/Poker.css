@@ -546,6 +546,7 @@ img {
     background-color: #2b2b2b;
     border: 0.15em solid #d3b465;
     box-sizing: border-box;
+	text-align: center;
 }
 
 .player-avatar--image {
@@ -568,7 +569,7 @@ img {
 .player-info--stash--container,
 .player-info--bet--container {
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
 	justify-content: center;
 	color: white;
 	text-shadow: 2px 2px 18px rgba(0,0,0,0.95);

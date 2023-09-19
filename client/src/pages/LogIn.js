@@ -107,12 +107,12 @@ const LogIn = (props) => {
                     >
                     <div className="simple-button-content" onClick={handleAuth}>Sign In</div>
                     </div>
-                    <div
+                    {/* <div
                     className="panel simple-button forgot-password-button-submit gray-button login-form-button"
                     tabIndex={0}
                     >
                     <div className="simple-button-content">Forgot Password?</div>
-                    </div>
+                    </div> */}
                     <div
                     className="panel simple-button sign-up-button-submit gray-button login-form-button"
                     tabIndex={0}

@@ -103,6 +103,29 @@ export const AddNewTable = () => {
     async (event) => {
       event.preventDefault();
   
+      // Validation checks
+      const { name, maxPlayers, limit } = values;
+      if (!name || name.trim() === '') {
+        // Name is required
+        alert('Table name is required.');
+        return;
+      }
+      if (name.length < 5 || name.length > 30) {
+        // Name should be between 5 and 30 characters
+        alert('Table name should be between 5 and 30 characters.');
+        return;
+      }
+      if (!maxPlayers || isNaN(maxPlayers) || maxPlayers < 2 || maxPlayers > 5) {
+        // Max Players should be a number between 2 and 5
+        alert('Max Players should be a number between 2 and 10.');
+        return;
+      }
+      if (!limit || isNaN(limit) || limit < 100 || limit > 100000) {
+        // Limit should be a number between 100 and 100000
+        alert('Limit should be a number between 100 and 100000.');
+        return;
+      }
+
       try {
         // Define the API URL
         const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/tables/create`;
@@ -118,19 +141,22 @@ export const AddNewTable = () => {
   
         // Check if the response is OK
         if (!response.ok) {
-          console.log(response);
+          alert(response);
+          return;
         }
   
         // Assuming the API returns the newly created table as JSON
         const data = await response.json();
   
         // Handle the response data as needed
-        console.log('Table created:', data);
+        alert('Table created!');
+        location.href = '/gametables';
   
         // You can also perform any other actions here, such as redirecting the user or updating the UI.
   
       } catch (error) {
         console.error('Error:', error);
+        alert(error);
       }
     },
     [values]
@@ -205,6 +231,10 @@ export const AddNewTable = () => {
                   required
                   type="number"
                   value={values.maxPlayers}
+                  inputProps={{
+                    min: 2,   // Minimum allowed value
+                    max: 5,  // Maximum allowed value
+                  }}
                 />
               </Grid>
               <Grid

@@ -9,6 +9,7 @@ const Register = (props) => {
   
     const emailRef = useRef(null);
     const passwordRef = useRef(null);
+    const confirmPasswordRef = useRef(null);
     const nicknameRef = useRef(null);
   
     if (isLoggedIn) return null;
@@ -26,18 +27,30 @@ const Register = (props) => {
         const name = nicknameRef.current.value;
         const email = emailRef.current.value;
         const password = passwordRef.current.value;
+        const confirmPassword = confirmPasswordRef.current.value;
 
-        if (
-          name &&
-          email &&
-          password &&
-          name.length >= 5 &&
-          name.length <= 12 &&
-          email.length >= 0 &&
-          password.length >= 6
-        ) {
-          register(name, email, password);
+        e.preventDefault();
+    
+        // Validation checks
+        if (!name || !email || !password) {
+          // Handle case when any field is empty
+          return alert('All fields are required.');
         }
+    
+        if (name.length < 5 || name.length > 12) {
+          return alert('Name must be between 5 and 12 characters.');
+        }
+    
+        if (password.length < 6) {
+          return alert('Password must be at least 6 characters.');
+        }
+    
+        if (confirmPassword != password) {
+          return alert('Password and Confirm Password do not match.');
+        }
+    
+        // All validation checks passed, proceed with registration
+        register(name, email, password);
     }
 
   return(
@@ -142,6 +155,11 @@ const Register = (props) => {
                                         className="input-field"
                                         type="password"
                                         defaultValue=""
+                                        name="passwordConfirm"
+                                        minLength="6"
+                                        autoComplete="new-password"
+                                        ref={confirmPasswordRef}
+                                        required
                                     />
                                     </div>
                                 </div>
