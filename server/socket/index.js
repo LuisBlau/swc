@@ -41,7 +41,6 @@ const initializeTables = async () => {
     console.error(error);
   }
 };
-initializeTables();
 
 async function addTable(tableID) {
   const table = await tableModel.findById(tableID);
@@ -50,11 +49,15 @@ async function addTable(tableID) {
 }
 
 const players = {};
+var mainSocket = null;
+var socketIO = null;
+
 function getCurrentPlayers() {
   return Object.values(players).map((player) => ({
     socketId: player.socketId,
     id: player.id,
     name: player.name,
+    chipsAmount: player.chipsAmount,
   }));
 }
 
@@ -70,7 +73,190 @@ function getCurrentTables() {
   }));
 }
 
+async function updatePlayerBankroll(player, amount) {
+  console.log('updatePlayerBankroll Player', player);
+  console.log('updatePlayerBankroll Amount', amount);
+  const user = await User.findById(player.id);
+  user.chipsAmount += amount;
+  await user.save();
+
+  console.log('updatePlayerBankroll Players', players);
+  if(players.length > 0) {
+    players[mainSocket.id].chipsAmount += amount;
+    socketIO.to(mainSocket.id).emit(PLAYERS_UPDATED, getCurrentPlayers());
+  }
+}
+
+function findSeatBySocketId(socketId) {
+  let foundSeat = null;
+  Object.values(tables).forEach((table) => {
+    Object.values(table.seats).forEach((seat) => {
+      if (seat && seat.player.socketId === socketId) {
+        foundSeat = seat;
+      }
+    });
+  });
+  return foundSeat;
+}
+
+function removeFromTables(socketId) {
+  for (let i = 0; i < Object.keys(tables).length; i++) {
+    tables[Object.keys(tables)[i]].removePlayer(socketId);
+  }
+}
+
+function broadcastToTable(table, message = null, from = null, ) {
+  console.log(table.players);
+  for (let i = 0; i < table.players.length; i++) {
+    let socketId = table.players[i].socketId;
+    let tableCopy = hideOpponentCards(table, socketId);
+    socketIO.to(socketId).emit(TABLE_UPDATED, {
+      table: tableCopy,
+      message,
+      from,
+    });
+  }
+}
+
+function changeTurnAndBroadcast(table, seatId) {
+  setTimeout(() => {
+    table.changeTurn(seatId);
+    broadcastToTable(table);
+
+    if (table.handOver) {
+      initNewHand(table);
+    }
+  }, 1000);
+}
+
+function initNewHand(table) {
+  if (table.activePlayers().length > 1) {
+    broadcastToTable(table, 'New hand starting.');
+  }
+  setTimeout(() => {
+    table.clearWinMessages();
+    table.startHand();
+    broadcastToTable(table, 'New hand started.');
+  }, 4000);
+}
+
+function clearForOnePlayer(table) {
+  table.clearWinMessages();
+  setTimeout(() => {
+    table.clearSeatHands();
+    table.resetBoardAndPot();
+    broadcastToTable(table, 'Waiting for more players');
+  }, 1000);
+}
+
+function hideOpponentCards(table, socketId) {
+  let tableCopy = JSON.parse(JSON.stringify(table));
+  let hiddenCard = { suit: 'hidden', rank: 'hidden' };
+  let hiddenHand = [hiddenCard, hiddenCard];
+
+  for (let i = 1; i <= tableCopy.maxPlayers; i++) {
+    let seat = tableCopy.seats[i];
+    if (
+      seat &&
+      seat.hand.length > 0 &&
+      seat.player.socketId !== socketId &&
+      !(seat.lastAction === WINNER && tableCopy.wentToShowdown)
+    ) {
+      seat.hand = hiddenHand;
+    }
+  }
+  return tableCopy;
+}
+
+
+/* bot precessing */
+initializeTables().then(() => {
+    
+  players['expert_socketid_1'] = new Player(
+    'expert_socketid_1',
+    'expert_userid_1',
+    'expert 1',
+    300000,
+  );
+  
+  //Get Random Table
+  var tableArray = Object.values(tables);
+  var randomIndex = Math.floor(Math.random() * tableArray.length);
+  var randomTable = tableArray[randomIndex];
+  console.log("randomTable", randomTable);
+  var tableId = randomTable.id;
+
+  //Join Table
+  console.log("Expert: JOIN_TABLE", tableId);
+  const table = tables[tableId];
+  const player = players['expert_socketid_1'];
+  table.addPlayer(player);
+
+  mainSocket && mainSocket.emit(TABLE_JOINED, { tables: getCurrentTables(), tableId });
+  mainSocket && mainSocket.broadcast.emit(TABLES_UPDATED, getCurrentTables());
+
+  if (
+    mainSocket &&
+    tables[tableId].players &&
+    tables[tableId].players.length > 0 &&
+    player
+  ) {
+    let message = `${player.name} joined the table.`;
+    broadcastToTable(table, message);
+  }
+
+  //Sit Down
+    const seatId = Math.floor(Math.random() * 3) + 1;
+    const amount = table.limit; //get from db table
+
+    if (player) {
+      table.sitPlayer(player, seatId, amount);
+
+      if(mainSocket) {
+        let message = `${player.name} sat down in Seat ${seatId}`;
+        // updatePlayerBankroll(player, -amount);
+        broadcastToTable(table, message);
+      }
+      if (table.activePlayers().length === 2) {
+        initNewHand(table);
+      }
+    }
+
+  // Function to be executed when the turn changes to true
+  function handleChange() {
+    console.log(`Turn for seat ${seatId} in table ${tableId} changed to true`);
+
+    // Perform any actions you want when the turn changes to true
+    //FOLD
+    setTimeout(() => {
+      let table = tables[tableId];
+      let res = table.handleFold('expert_socketid_1');
+      res && broadcastToTable(table, res.message);
+      res && changeTurnAndBroadcast(table, res.seatId);
+    }, 5000);
+  }
+
+  // Create a custom setter for the `turn` property
+  Object.defineProperty(tables[tableId].seats[seatId], 'turn', {
+    set: function (value) {
+      if (value === true) {
+        handleChange();
+      }
+      this._turn = value;
+    },
+    get: function () {
+      return this._turn;
+    },
+  });
+
+});
+
+/* end bot precessing */
+
+
 const init = (socket, io) => {
+  mainSocket = socket;
+  socketIO = io;
   socket.on(FETCH_LOBBY_INFO, async (token) => {
     let user;
 
@@ -102,6 +288,7 @@ const init = (socket, io) => {
         user.name,
         user.chipsAmount,
       );
+      console.log('init players', players);
 
       socket.emit(RECEIVE_LOBBY_INFO, {
         tables: getCurrentTables(),
@@ -280,101 +467,6 @@ const init = (socket, io) => {
     socket.broadcast.emit(TABLES_UPDATED, getCurrentTables());
     socket.broadcast.emit(PLAYERS_UPDATED, getCurrentPlayers());
   });
-
-  async function updatePlayerBankroll(player, amount) {
-    console.log('updatePlayerBankroll Player', player);
-    console.log('updatePlayerBankroll Amount', amount);
-    const user = await User.findById(player.id);
-    user.chipsAmount += amount;
-    await user.save();
-    
-    console.log('updatePlayerBankroll Players', players);
-    if(players.length > 0) {
-      players[socket.id].chipsAmount += amount;
-      io.to(socket.id).emit(PLAYERS_UPDATED, getCurrentPlayers());
-    }
-  }
-
-  function findSeatBySocketId(socketId) {
-    let foundSeat = null;
-    Object.values(tables).forEach((table) => {
-      Object.values(table.seats).forEach((seat) => {
-        if (seat && seat.player.socketId === socketId) {
-          foundSeat = seat;
-        }
-      });
-    });
-    return foundSeat;
-  }
-
-  function removeFromTables(socketId) {
-    for (let i = 0; i < Object.keys(tables).length; i++) {
-      tables[Object.keys(tables)[i]].removePlayer(socketId);
-    }
-  }
-
-  function broadcastToTable(table, message = null, from = null) {
-    console.log(table.players);
-    for (let i = 0; i < table.players.length; i++) {
-      let socketId = table.players[i].socketId;
-      let tableCopy = hideOpponentCards(table, socketId);
-      io.to(socketId).emit(TABLE_UPDATED, {
-        table: tableCopy,
-        message,
-        from,
-      });
-    }
-  }
-
-  function changeTurnAndBroadcast(table, seatId) {
-    setTimeout(() => {
-      table.changeTurn(seatId);
-      broadcastToTable(table);
-
-      if (table.handOver) {
-        initNewHand(table);
-      }
-    }, 1000);
-  }
-
-  function initNewHand(table) {
-    if (table.activePlayers().length > 1) {
-      broadcastToTable(table, 'New hand starting.');
-    }
-    setTimeout(() => {
-      table.clearWinMessages();
-      table.startHand();
-      broadcastToTable(table, 'New hand started.');
-    }, 4000);
-  }
-
-  function clearForOnePlayer(table) {
-    table.clearWinMessages();
-    setTimeout(() => {
-      table.clearSeatHands();
-      table.resetBoardAndPot();
-      broadcastToTable(table, 'Waiting for more players');
-    }, 1000);
-  }
-
-  function hideOpponentCards(table, socketId) {
-    let tableCopy = JSON.parse(JSON.stringify(table));
-    let hiddenCard = { suit: 'hidden', rank: 'hidden' };
-    let hiddenHand = [hiddenCard, hiddenCard];
-
-    for (let i = 1; i <= tableCopy.maxPlayers; i++) {
-      let seat = tableCopy.seats[i];
-      if (
-        seat &&
-        seat.hand.length > 0 &&
-        seat.player.socketId !== socketId &&
-        !(seat.lastAction === WINNER && tableCopy.wentToShowdown)
-      ) {
-        seat.hand = hiddenHand;
-      }
-    }
-    return tableCopy;
-  }
 };
 
 module.exports = { init };

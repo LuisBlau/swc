@@ -1,11 +1,20 @@
 node_modules
 **/node_modules
 
+.env
 .env.local
+
+**/.env
 **/.env.local
+**/.env.production
+**/.env.development
+
 
 **/.next
+
 **/build
 
 server/.env.development
 server/.env.production
+
+client/package.json
