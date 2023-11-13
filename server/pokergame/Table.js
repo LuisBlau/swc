@@ -6,7 +6,7 @@ const Deck = require('./Deck');
 const SidePot = require('./SidePot');
 
 class Table {
-  constructor(id, name, limit, maxPlayers = 5) {
+  constructor(id, name, limit, maxPlayers = 5, botCount = 0) {
     this.id = id;
     this.name = name;
     this.limit = limit;
@@ -29,6 +29,7 @@ class Table {
     this.wentToShowdown = true;
     this.sidePots = [];
     this.history = [];
+    this.botCount = botCount;
   }
 
   initSeats(maxPlayers) {
@@ -73,7 +74,7 @@ class Table {
 
   standPlayer(socketId) {
     for (let i of Object.keys(this.seats)) {
-      if (this.seats[i] && this.seats[i].player.socketId === socketId) {
+      if (this.seats[i] && this.seats[i].player?.socketId === socketId) {
         this.seats[i] = null;
       }
     }
@@ -91,7 +92,7 @@ class Table {
 
   findPlayerBySocketId(socketId) {
     for (let i = 1; i <= this.maxPlayers; i++) {
-      if (this.seats[i] && this.seats[i].player.socketId === socketId) {
+      if (this.seats[i] && this.seats[i].player?.socketId === socketId) {
         return this.seats[i];
       }
     }
@@ -104,7 +105,7 @@ class Table {
   }
   activePlayers() {
     return Object.values(this.seats).filter(
-      (seat) => seat != null && !seat.sittingOut,
+      (seat) => seat != null && !seat.sittingOut
     );
   }
   nextUnfoldedPlayer(player, places) {
@@ -181,7 +182,7 @@ class Table {
 
     this.pot += this.minBet * 3;
     this.callAmount = this.minBet * 2;
-    this.minRaise = this.minBet * 4;
+    this.minRaise = this.minBet * 2;
   }
   clearSeats() {
     for (let i of Object.keys(this.seats)) {
@@ -279,6 +280,7 @@ class Table {
     }
 
     if (this.actionIsComplete()) {
+      this.numberOfRaises = 0
       this.calculateSidePots();
       while (this.board.length <= 5 && !this.handOver) {
         this.dealNextStreet();
@@ -559,27 +561,63 @@ class Table {
     let seat = this.findPlayerBySocketId(socketId);
 
     if (seat) {
-      let addedToPot = amount - seat.bet;
+      if (amount >= seat.stack + seat.bet) {
+        // All-in move
+        amount = seat.stack + seat.bet;
+        let addedToPot = amount - seat.bet;
 
-      seat.raise(amount);
+        seat.raise(amount);
 
-      if (this.sidePots.length > 0) {
-        this.sidePots[this.sidePots.length - 1].amount += addedToPot;
-      } else {
-        this.pot += addedToPot;
+        if (this.sidePots.length > 0) {
+          this.sidePots[this.sidePots.length - 1].amount += addedToPot;
+        } else {
+          this.pot += addedToPot;
+        }
+
+        this.minRaise = this.callAmount
+          ? this.callAmount + (seat.bet - this.callAmount) * 2
+          : seat.bet * 2;
+        this.callAmount = amount;
+        this.numberOfRaises++;
+
+        return {
+          seatId: seat.id,
+          message: `${seat.player.name} raises to $${amount.toFixed(2)}`,
+        };
       }
 
-      this.minRaise = this.callAmount
-        ? this.callAmount + (seat.bet - this.callAmount) * 2
-        : seat.bet * 2;
-      this.callAmount = amount;
+      if (amount >= this.minRaise) {
+        let addedToPot = amount - seat.bet;
 
-      return {
-        seatId: seat.id,
-        message: `${seat.player.name} raises to $${amount.toFixed(2)}`,
-      };
+        seat.raise(amount);
+
+        if (this.sidePots.length > 0) {
+          this.sidePots[this.sidePots.length - 1].amount += addedToPot;
+        } else {
+          this.pot += addedToPot;
+        }
+
+        this.minRaise = this.callAmount
+          ? this.callAmount + (seat.bet - this.callAmount) * 2
+          : seat.bet * 2;
+        this.callAmount = amount;
+        this.numberOfRaises++;
+
+        return {
+          seatId: seat.id,
+          message: `${seat.player.name} raises to $${amount.toFixed(2)}`,
+        };
+      } else {
+        // Handle the case where the raise amount is below the minimum required
+        return {
+          error: 'Raise amount is below the minimum required.',
+        };
+      }
     } else {
-      return null;
+      // Handle the case where the player is not found
+      return {
+        error: 'Player not found.',
+      };
     }
   }
 }

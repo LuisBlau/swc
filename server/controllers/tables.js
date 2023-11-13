@@ -20,12 +20,13 @@ exports.createTable = async (req, res) => {
     }
 console.log(req.body);
     // Create a new Table instance with the validated data, and save to db table
-    const { name, gametype, maxPlayers, limit } = req.body;
+    const { name, gametype, maxPlayers, limit, botCount } = req.body;
     const newTable = new Table({
       name,
       gametype,
       maxPlayers,
       limit,
+      botCount
     });
     const table = await newTable.save();
     res.status(201).json(table);

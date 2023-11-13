@@ -18,6 +18,11 @@ const TableSchema = new mongoose.Schema({
     type: Number,
     required: true,
     default: 5,
+  },
+  botCount: {
+    type: Number,
+    required: false,
+    default: 0,
   }
 });
 

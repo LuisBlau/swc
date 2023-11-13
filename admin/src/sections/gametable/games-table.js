@@ -65,6 +65,9 @@ export const GamesTable = (props) => {
                   Max Players
                 </TableCell>
                 <TableCell>
+                  Bot Count
+                </TableCell>
+                <TableCell>
                   Limit
                 </TableCell>
                 <TableCell>
@@ -127,6 +130,13 @@ export const GamesTable = (props) => {
                       }}
                     >
                       {customer.maxPlayers}
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        backgroundColor:"#1d2333" 
+                      }}
+                    >
+                      {customer.botCount}
                     </TableCell>
                     <TableCell
                       sx={{

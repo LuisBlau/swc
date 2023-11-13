@@ -4,7 +4,7 @@ import { dealMissingCommunityCards, showDown, generateDeckOfCards, shuffle, deal
 
 const axios = require('axios')
 // TODO Generate UUID to simulate User ID and really get a perf match on binding to players when determining winnings
-const generateTable = async () => {
+const generateTable = async (botCount = 4) => {
 	const users = [{
 		id: uuid(),
 		name: 'Player 1',
@@ -27,7 +27,7 @@ const generateTable = async () => {
 		robot: false
 	}];
 
-	const response = await axios.get(`https://randomuser.me/api/?results=4&nat=us,gb,fr`);
+	const response = await axios.get(`https://randomuser.me/api/?results=${botCount}&nat=us,gb,fr`);
 	response.data.results
 		.map(user => {
 			const randomizedChips = Math.floor(Math.random() * (20000 - 18000)) + 18000;

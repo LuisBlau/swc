@@ -1,5 +1,6 @@
-const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const axios = require('axios');
+const User = require('../models/User');
 const Table = require('../pokergame/Table');
 const Player = require('../pokergame/Player');
 const {
@@ -30,22 +31,53 @@ const config = require('../config');
 const tableModel = require('../models/Table');
 
 const tables = {};
+async function generateBot(limit) {
+  try {
+    const response = await axios.get('https://randomuser.me/api/?nat=us,gb');
+    const userData = response.data.results[0];
+
+    const bot = {
+      socketId: `bot_socketid_${Date.now()}`,
+      userId: `bot_userid_${Date.now()}`,
+      name: `${userData.name.first} ${userData.name.last}`,
+      // Add more fields as needed
+      chipsAmount: limit, // Set an initial chip amount for the bot
+      isBot: true,
+    };
+
+    return bot;
+  } catch (error) {
+    console.error('Error generating bot:', error.message);
+    throw error;
+  }
+}
 const initializeTables = async () => {
   try {
     const tableData = await tableModel.find();
-    tableData.map((table) => {
-      tables[table.id] = new Table(table.id, table.name, table.limit, table.maxPlayers);
-    });
-    console.log(tables);
+    for(const table of tableData) {
+      tables[table.id] = new Table(table.id, table.name, table.limit, table.maxPlayers, table.botCount);
+
+      // Add bots to the table if there are no human players
+      if (tables[table.id].players.length === 0) {
+        const botCountToAdd = table.botCount || 0; // You can adjust the number of bots as needed
+
+        for (let i = 1; i <= botCountToAdd; i++) {
+          const newBot = await generateBot(table.limit)
+
+          players[newBot.socketId] = new Player(newBot.socketId, newBot.userId, newBot.name, newBot.chipsAmount, newBot.isBot);
+          tables[table.id].addPlayer(players[newBot.socketId]);
+        }
+      }
+    }
   } catch (error) {
-    console.error(error);
+    console.error('initializeTables error = ', error);
   }
 };
 
 async function addTable(tableID) {
   const table = await tableModel.findById(tableID);
   console.log("New Table Detected", table);
-  tables[tableID] = new Table(table.id, table.name, table.limit, table.maxPlayers);
+  tables[tableID] = new Table(table.id, table.name, table.limit, table.maxPlayers, table.botCount);
 }
 
 const players = {};
@@ -70,6 +102,7 @@ function getCurrentTables() {
     currentNumberPlayers: table.players.length,
     smallBlind: table.minBet,
     bigBlind: table.minBet * 2,
+    botCount: table.botCount || 0
   }));
 }
 
@@ -91,7 +124,7 @@ function findSeatBySocketId(socketId) {
   let foundSeat = null;
   Object.values(tables).forEach((table) => {
     Object.values(table.seats).forEach((seat) => {
-      if (seat && seat.player.socketId === socketId) {
+      if (seat && seat.player?.socketId === socketId) {
         foundSeat = seat;
       }
     });
@@ -106,15 +139,18 @@ function removeFromTables(socketId) {
 }
 
 function broadcastToTable(table, message = null, from = null, ) {
-  console.log(table.players);
   for (let i = 0; i < table.players.length; i++) {
-    let socketId = table.players[i].socketId;
-    let tableCopy = hideOpponentCards(table, socketId);
-    socketIO.to(socketId).emit(TABLE_UPDATED, {
-      table: tableCopy,
-      message,
-      from,
-    });
+    if(table.players[i]){
+      let socketId = table.players[i].socketId;
+      let tableCopy = hideOpponentCards(table, socketId);
+      if(socketIO) {
+        socketIO.to(socketId).emit(TABLE_UPDATED, {
+          table: tableCopy,
+          message,
+          from,
+        });
+      }
+    }
   }
 }
 
@@ -138,6 +174,41 @@ function initNewHand(table) {
     table.startHand();
     broadcastToTable(table, 'New hand started.');
   }, 4000);
+
+  setTimeout(async () => {
+    for(const seat of Object.keys(table.seats)) {
+      const currentPlayer = table.seats[seat]
+      console.log('-- seat = ', seat)
+      console.log('-- currentPlayer = ', currentPlayer)
+
+      if (currentPlayer && currentPlayer.stack <= 0) {
+        // Busted bot, replace it with a new one
+        console.log('--- handle busted player ---');
+        const newBot = await generateBot(table.limit);
+    
+        players[newBot.socketId] = new Player(
+          newBot.socketId,
+          newBot.userId,
+          newBot.name,
+          newBot.chipsAmount,
+          true
+        );
+        table.removePlayer(currentPlayer.player.socketId)
+        const newBotSeatId = table.addPlayer(players[newBot.socketId]);
+        table.sitPlayer(players[newBot.socketId], currentPlayer.id, table.limit);
+    
+        console.log(`Replaced busted bot with ${newBot.name}`);
+    
+        // Inform the table about the replacement
+        const message = `${newBot.name} replaced ${currentPlayer.player.name}`;
+        broadcastToTable(table, message);
+    
+        // Handle the new bot's turn
+        handleBotAction(table, newBotSeatId, 'FOLD'); // The new bot folds for this round
+        return 'FOLD';
+      }
+    }
+  }, 10000)
 }
 
 function clearForOnePlayer(table) {
@@ -158,6 +229,7 @@ function hideOpponentCards(table, socketId) {
     let seat = tableCopy.seats[i];
     if (
       seat &&
+      seat.hand &&
       seat.hand.length > 0 &&
       seat.player.socketId !== socketId &&
       !(seat.lastAction === WINNER && tableCopy.wentToShowdown)
@@ -168,87 +240,228 @@ function hideOpponentCards(table, socketId) {
   return tableCopy;
 }
 
+async function simulateBotAction(table, seatId) {
+  const currentPlayer = table.seats[seatId].player;
+  const currentBet = table.callAmount;
+  const currentPot = table.pot;
+
+  
+
+  // Simulate a basic strategy for the bot
+  const handStrength = evaluateHand(table.seats[seatId].hand, table.board);
+
+  // Calculate the amount needed to call
+  const amountToCall = currentBet - table.seats[seatId].bet;
+
+  // Decide the action based on hand strength, current bet, and stack
+  if (handStrength >= 0.5) {
+    // Strong hand, raise with 70% probability
+    return Math.random() < 0.7 ? 'RAISE' : 'CALL';
+  } else if (handStrength >= 0.3 && amountToCall === 0) {
+    // Medium hand, check if there's no bet
+    return 'CHECK';
+  } else if (handStrength >= 0.3 && amountToCall > 0) {
+    // Medium hand, call if there's a bet
+    return 'CALL';
+  } else if (handStrength < 0.3 && amountToCall === 0) {
+    // Weak hand, fold with 60% probability, otherwise call
+    return 'CHECK';
+  } else if (handStrength < 0.3 && amountToCall > 0) {
+    // Weak hand, fold with 60% probability, otherwise call
+    return Math.random() < 0.6 ? 'FOLD' : 'CALL';
+  }
+}
+
+function checkFlush(cards) {
+  const suits = {};
+  for (const card of cards) {
+    suits[card.suit] = (suits[card.suit] || 0) + 1;
+  }
+  for (const suitCount of Object.values(suits)) {
+    if (suitCount >= 5) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function checkStraight(cards) {
+  const sortedCards = cards
+    .map(card => card.rank === 'A' ? 1 : (card.rank === 'K' ? 13 : (card.rank === 'Q' ? 12 : (card.rank === 'J' ? 11 : parseInt(card.rank)))))
+    .sort((a, b) => a - b);
+
+  for (let i = 0; i < sortedCards.length - 4; i++) {
+    if (
+      sortedCards[i] === sortedCards[i + 1] - 1 &&
+      sortedCards[i] === sortedCards[i + 2] - 2 &&
+      sortedCards[i] === sortedCards[i + 3] - 3 &&
+      sortedCards[i] === sortedCards[i + 4] - 4
+    ) {
+      return true;
+    }
+  }
+
+  // Check special case: A-2-3-4-5 straight
+  if (
+    sortedCards[0] === 1 &&
+    sortedCards[1] === 10 &&
+    sortedCards[2] === 11 &&
+    sortedCards[3] === 12 &&
+    sortedCards[4] === 13
+  ) {
+    return true;
+  }
+
+  return false;
+}
+
+function evaluateHand(playerHand, communityCards) {
+  console.log('playerHand = ', playerHand)
+  console.log('communityCards = ', communityCards)
+  const allCards = [...playerHand, ...communityCards];
+
+  const counts = {};
+  for (const card of allCards) {
+    const rank = card.rank;
+    counts[rank] = (counts[rank] || 0) + 1;
+  }
+
+  const uniqueRanks = Object.keys(counts);
+
+  const pairs = uniqueRanks.filter((rank) => counts[rank] === 2).length;
+  const threeOfAKind = uniqueRanks.some((rank) => counts[rank] === 3);
+  const fourOfAKind = uniqueRanks.some((rank) => counts[rank] === 4);
+
+  const isFlush = checkFlush(allCards);
+
+  const isStraight = checkStraight(allCards);
+
+  if (isFlush && isStraight) {
+    return 1; // Royal Flush
+  } else if (fourOfAKind) {
+    return 0.9; // Four of a Kind
+  } else if (pairs === 1 && threeOfAKind) {
+    return 0.8; // Full House
+  } else if (isFlush) {
+    return 0.7; // Flush
+  } else if (isStraight) {
+    return 0.6; // Straight
+  } else if (threeOfAKind) {
+    return 0.5; // Three of a Kind
+  } else if (pairs === 2) {
+    return 0.4; // Two Pairs
+  } else if (pairs === 1) {
+    return 0.3; // One Pair
+  } else {
+    return 0.2; // High Card
+  }
+}
+
+function rankValue(rank) {
+  const values = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14 };
+  return values[rank] || parseInt(rank, 10);
+}
+
+function handleBotAction(table, seatId, action) {
+  console.log('action = ', action)
+  switch (action) {
+    case 'FOLD':
+      const foldResult = table.handleFold(table.seats[seatId].player.socketId);
+      foldResult && broadcastToTable(table, foldResult.message);
+      foldResult && changeTurnAndBroadcast(table, foldResult.seatId);
+      break;
+    case 'CHECK':
+      const checkResult = table.handleCheck(table.seats[seatId].player.socketId);
+      checkResult && broadcastToTable(table, checkResult.message);
+      checkResult && changeTurnAndBroadcast(table, checkResult.seatId);
+      break;
+    case 'CALL':
+      const callResult = table.handleCall(table.seats[seatId].player.socketId);
+      callResult && broadcastToTable(table, callResult.message);
+      callResult && changeTurnAndBroadcast(table, callResult.seatId);
+      break;
+    case 'RAISE':
+      const raiseAmount = Math.floor(Math.random() * ((table.seats[seatId].stack || 0) / 2)) + table.minRaise; // Adjust the raise amount as needed
+      const raiseResult = table.handleRaise(table.seats[seatId].player.socketId, raiseAmount);
+      raiseResult && broadcastToTable(table, raiseResult.message);
+      raiseResult && changeTurnAndBroadcast(table, raiseResult.seatId);
+      break;
+    default:
+      // Handle other actions as needed
+      break;
+  }
+}
+
+function handleChange(table, seatId) {
+  console.log('handleChange')
+  console.log(`Turn for seat ${seatId} in table ${table.id} changed to true`);
+
+  // Perform any actions you want when the turn changes to true
+  //FOLD
+  setTimeout(async () => {
+    const currentPlayer = table.seats[seatId].player;
+
+    if (currentPlayer.isBot) {
+      // Simulate bot actions
+      const action = await simulateBotAction(table, seatId);
+      handleBotAction(table, seatId, action);
+    }
+  }, 5000);
+}
+
 
 /* bot precessing */
 initializeTables().then(() => {
-    
-  players['expert_socketid_1'] = new Player(
-    'expert_socketid_1',
-    'expert_userid_1',
-    'expert 1',
-    300000,
-  );
-  
   //Get Random Table
-  var tableArray = Object.values(tables);
-  var randomIndex = Math.floor(Math.random() * tableArray.length);
-  var randomTable = tableArray[randomIndex];
-  console.log("randomTable", randomTable);
-  var tableId = randomTable.id;
+  var tableArray = Object.keys(tables);
+  if(tableArray.length == 0) return;
+  
+  for(let tableId of tableArray) {
+    const table = tables[tableId]
 
-  //Join Table
-  console.log("Expert: JOIN_TABLE", tableId);
-  const table = tables[tableId];
-  const player = players['expert_socketid_1'];
-  table.addPlayer(player);
+    mainSocket && mainSocket.emit(TABLE_JOINED, { tables: getCurrentTables(), tableId });
+    mainSocket && mainSocket.broadcast.emit(TABLES_UPDATED, getCurrentTables());
 
-  mainSocket && mainSocket.emit(TABLE_JOINED, { tables: getCurrentTables(), tableId });
-  mainSocket && mainSocket.broadcast.emit(TABLES_UPDATED, getCurrentTables());
-
-  if (
-    mainSocket &&
-    tables[tableId].players &&
-    tables[tableId].players.length > 0 &&
-    player
-  ) {
-    let message = `${player.name} joined the table.`;
-    broadcastToTable(table, message);
-  }
-
-  //Sit Down
-    const seatId = Math.floor(Math.random() * 3) + 1;
-    const amount = table.limit; //get from db table
-
-    if (player) {
+    let seatId = 0
+    for(const player of table.players) {
+      //Sit Down
+      seatId = seatId + 1;
+      const amount = table.limit; //get from db table
       table.sitPlayer(player, seatId, amount);
+      console.log('seats = ', table.seats)
 
       if(mainSocket) {
         let message = `${player.name} sat down in Seat ${seatId}`;
         // updatePlayerBankroll(player, -amount);
+        console.log(message)
         broadcastToTable(table, message);
       }
       if (table.activePlayers().length === 2) {
         initNewHand(table);
       }
+
+      console.log('1111')
+
+      // Function to be executed when the turn changes to true
+      
+
+      // Create a custom setter for the `turn` property
+      Object.defineProperty(table.seats[seatId], 'turn', {
+        set: function (value) {
+          if (value === true && !this._turnHandled) {
+            this._turnHandled = true
+            handleChange(table, this.id);
+          } else {
+            this._turnHandled = false
+          }
+          this._turn = value;
+        },
+        get: function () {
+          return this._turn;
+        },
+      });
     }
-
-  // Function to be executed when the turn changes to true
-  function handleChange() {
-    console.log(`Turn for seat ${seatId} in table ${tableId} changed to true`);
-
-    // Perform any actions you want when the turn changes to true
-    //FOLD
-    setTimeout(() => {
-      let table = tables[tableId];
-      let res = table.handleFold('expert_socketid_1');
-      res && broadcastToTable(table, res.message);
-      res && changeTurnAndBroadcast(table, res.seatId);
-    }, 5000);
   }
-
-  // Create a custom setter for the `turn` property
-  Object.defineProperty(tables[tableId].seats[seatId], 'turn', {
-    set: function (value) {
-      if (value === true) {
-        handleChange();
-      }
-      this._turn = value;
-    },
-    get: function () {
-      return this._turn;
-    },
-  });
-
 });
 
 /* end bot precessing */
@@ -258,6 +471,7 @@ const init = (socket, io) => {
   mainSocket = socket;
   socketIO = io;
   socket.on(FETCH_LOBBY_INFO, async (token) => {
+    console.log('FETCH_LOBBY_INFO')
     let user;
 
     jwt.verify(token, config.JWT_SECRET, (err, decoded) => {
@@ -326,6 +540,7 @@ const init = (socket, io) => {
   });
 
   socket.on(LEAVE_TABLE, (tableId) => {
+    console.log('LEAVE_TABLE')
     const table = tables[tableId];
     const player = players[socket.id];
     const seat = Object.values(table.seats).find(
@@ -356,6 +571,7 @@ const init = (socket, io) => {
   });
 
   socket.on(FOLD, (tableId) => {
+    console.log('FOLD')
     let table = tables[tableId];
     let res = table.handleFold(socket.id);
     res && broadcastToTable(table, res.message);
@@ -363,6 +579,7 @@ const init = (socket, io) => {
   });
 
   socket.on(CHECK, (tableId) => {
+    console.log('CHECK')
     let table = tables[tableId];
     let res = table.handleCheck(socket.id);
     res && broadcastToTable(table, res.message);
@@ -370,6 +587,7 @@ const init = (socket, io) => {
   });
 
   socket.on(CALL, (tableId) => {
+    console.log('CALL')
     let table = tables[tableId];
     let res = table.handleCall(socket.id);
     res && broadcastToTable(table, res.message);
@@ -377,6 +595,7 @@ const init = (socket, io) => {
   });
 
   socket.on(RAISE, ({ tableId, amount }) => {
+    console.log('RAISE')
     let table = tables[tableId];
     let res = table.handleRaise(socket.id, amount);
     res && broadcastToTable(table, res.message);
@@ -384,11 +603,13 @@ const init = (socket, io) => {
   });
 
   socket.on(TABLE_MESSAGE, ({ message, from, tableId }) => {
+    console.log('TABLE_MESSAGE')
     let table = tables[tableId];
     broadcastToTable(table, message, from);
   });
 
   socket.on(SIT_DOWN, ({ tableId, seatId, amount }) => {
+    console.log('SIT_DOWN')
     const table = tables[tableId];
     const player = players[socket.id];
 
@@ -406,6 +627,7 @@ const init = (socket, io) => {
   });
 
   socket.on(REBUY, ({ tableId, seatId, amount }) => {
+    console.log('REBUY')
     const table = tables[tableId];
     const player = players[socket.id];
 
@@ -416,6 +638,7 @@ const init = (socket, io) => {
   });
 
   socket.on(STAND_UP, (tableId) => {
+    console.log('STAND_UP')
     const table = tables[tableId];
     const player = players[socket.id];
     const seat = Object.values(table.seats).find(
@@ -437,6 +660,7 @@ const init = (socket, io) => {
   });
 
   socket.on(SITTING_OUT, ({ tableId, seatId }) => {
+    console.log('SITTING_OUT')
     const table = tables[tableId];
     const seat = table.seats[seatId];
     seat.sittingOut = true;
@@ -445,6 +669,7 @@ const init = (socket, io) => {
   });
 
   socket.on(SITTING_IN, ({ tableId, seatId }) => {
+    console.log('SITTING_IN')
     const table = tables[tableId];
     const seat = table.seats[seatId];
     seat.sittingOut = false;
@@ -456,6 +681,7 @@ const init = (socket, io) => {
   });
 
   socket.on(DISCONNECT, () => {
+    console.log('DISCONNECT')
     const seat = findSeatBySocketId(socket.id);
     if (seat) {
       updatePlayerBankroll(seat.player, seat.stack);

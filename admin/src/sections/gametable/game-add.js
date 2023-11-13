@@ -79,6 +79,7 @@ export const AddNewTable = () => {
     gametype: 'holdem',
     maxPlayers: 5,
     limit: 10000,
+    botCount: 3
   });
 
   const handleChange = useCallback(
@@ -104,7 +105,7 @@ export const AddNewTable = () => {
       event.preventDefault();
   
       // Validation checks
-      const { name, maxPlayers, limit } = values;
+      const { name, maxPlayers, limit, botCount } = values;
       if (!name || name.trim() === '') {
         // Name is required
         alert('Table name is required.');
@@ -118,6 +119,11 @@ export const AddNewTable = () => {
       if (!maxPlayers || isNaN(maxPlayers) || maxPlayers < 2 || maxPlayers > 5) {
         // Max Players should be a number between 2 and 5
         alert('Max Players should be a number between 2 and 5.');
+        return;
+      }
+      if (!botCount || isNaN(botCount) || botCount > maxPlayers - 1) {
+        // Limit should be a number between 100 and 100000
+        alert('Max bot count should be a number smaller than Max Players.');
         return;
       }
       if (!limit || isNaN(limit) || limit < 100 || limit > 100000) {
@@ -260,6 +266,24 @@ export const AddNewTable = () => {
                     </option>
                   ))}
                 </TextField>
+              </Grid>
+              <Grid
+                xs={12}
+                md={6}
+              >
+                <TextField
+                  fullWidth
+                  label="Bot Count"
+                  name="botCount"
+                  onChange={handleChange}
+                  required
+                  type="number"
+                  value={values.botCount}
+                  inputProps={{
+                    min: 0,   // Minimum allowed value
+                    max: values.maxPlayers - 1,  // Maximum allowed value
+                  }}
+                />
               </Grid>
             </Grid>
           </Box>
