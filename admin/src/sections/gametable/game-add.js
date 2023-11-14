@@ -1,4 +1,5 @@
 import { useCallback, useState } from 'react';
+import io from 'socket.io-client';
 import {
   Box,
   Button,
@@ -153,6 +154,15 @@ export const AddNewTable = () => {
   
         // Assuming the API returns the newly created table as JSON
         const data = await response.json();
+
+        const socketURI = process.env.NODE_ENV === 'production' ? process.env.REACT_APP_SERVER_URI : `http://localhost:5000/`
+        const socket = io(socketURI, {
+          transports: ['websocket'],
+          upgrade: false,
+        });
+
+        console.log('TABLE_CREATED', data);
+        socket.emit('TABLE_CREATED', data);
   
         // Handle the response data as needed
         alert('Table created!');

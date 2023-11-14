@@ -6,6 +6,7 @@ const configureMiddleware = require('./middleware');
 const configureRoutes = require('./routes');
 const socketio = require('socket.io');
 const gameSocket = require('./socket/index');
+const cronjob = require('./socket/cronjob');
 
 // Connect and get reference to mongodb instance
 let db;
@@ -47,3 +48,5 @@ process.on('unhandledRejection', (err) => {
     process.exit(1);
   });
 });
+
+cronjob.runCrons()

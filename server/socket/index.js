@@ -24,6 +24,7 @@ const {
   SITTING_IN,
   DISCONNECT,
   TABLE_UPDATED,
+  TABLE_CREATED,
   WINNER,
 } = require('../pokergame/actions');
 const config = require('../config');
@@ -178,8 +179,6 @@ function initNewHand(table) {
   setTimeout(async () => {
     for(const seat of Object.keys(table.seats)) {
       const currentPlayer = table.seats[seat]
-      console.log('-- seat = ', seat)
-      console.log('-- currentPlayer = ', currentPlayer)
 
       if (currentPlayer && currentPlayer.stack <= 0) {
         // Busted bot, replace it with a new one
@@ -204,7 +203,7 @@ function initNewHand(table) {
         broadcastToTable(table, message);
     
         // Handle the new bot's turn
-        handleBotAction(table, newBotSeatId, 'FOLD'); // The new bot folds for this round
+        handleBotAction(table, currentPlayer.id, 'FOLD'); // The new bot folds for this round
         return 'FOLD';
       }
     }
@@ -367,24 +366,40 @@ function handleBotAction(table, seatId, action) {
   switch (action) {
     case 'FOLD':
       const foldResult = table.handleFold(table.seats[seatId].player.socketId);
-      foldResult && broadcastToTable(table, foldResult.message);
-      foldResult && changeTurnAndBroadcast(table, foldResult.seatId);
+      if (foldResult) {
+        foldResult && broadcastToTable(table, foldResult.message);
+        foldResult && changeTurnAndBroadcast(table, foldResult.seatId);
+      } else {
+        changeTurnAndBroadcast(table, seatId);
+      }
       break;
     case 'CHECK':
       const checkResult = table.handleCheck(table.seats[seatId].player.socketId);
-      checkResult && broadcastToTable(table, checkResult.message);
-      checkResult && changeTurnAndBroadcast(table, checkResult.seatId);
+      if (checkResult) {
+        checkResult && broadcastToTable(table, checkResult.message);
+        checkResult && changeTurnAndBroadcast(table, checkResult.seatId);
+      } else {
+        changeTurnAndBroadcast(table, seatId);
+      }
       break;
     case 'CALL':
       const callResult = table.handleCall(table.seats[seatId].player.socketId);
-      callResult && broadcastToTable(table, callResult.message);
-      callResult && changeTurnAndBroadcast(table, callResult.seatId);
+      if (callResult) {
+        callResult && broadcastToTable(table, callResult.message);
+        callResult && changeTurnAndBroadcast(table, callResult.seatId);
+      } else {
+        changeTurnAndBroadcast(table, seatId);
+      }
       break;
     case 'RAISE':
       const raiseAmount = Math.floor(Math.random() * ((table.seats[seatId].stack || 0) / 2)) + table.minRaise; // Adjust the raise amount as needed
       const raiseResult = table.handleRaise(table.seats[seatId].player.socketId, raiseAmount);
-      raiseResult && broadcastToTable(table, raiseResult.message);
-      raiseResult && changeTurnAndBroadcast(table, raiseResult.seatId);
+      if (raiseResult) {
+        raiseResult && broadcastToTable(table, raiseResult.message);
+        raiseResult && changeTurnAndBroadcast(table, raiseResult.seatId);
+      } else {
+        changeTurnAndBroadcast(table, seatId);
+      }
       break;
     default:
       // Handle other actions as needed
@@ -536,6 +551,20 @@ const init = (socket, io) => {
     ) {
       let message = `${player.name} joined the table.`;
       broadcastToTable(table, message);
+    }
+  });
+
+  socket.on(TABLE_CREATED, async (table) => {
+    console.log("TABLE_CREATED", table);
+    table.id = table._id
+
+    try {
+
+      if (!tables[table.id]) {
+        await createNewTable(table);
+      }
+    } catch (err) {
+      console.log('Error while creating bots for new table : ', err)
     }
   });
 
@@ -695,4 +724,83 @@ const init = (socket, io) => {
   });
 };
 
-module.exports = { init };
+async function createNewTable(table) {
+  console.log('*********************************');
+  console.log("Table not found. Adding new table.");
+  await addTable(table.id);
+  console.log("New Table Added", tables[table.id]);
+
+  // Add bots to the table if there are no human players
+  if (tables[table.id].players.length === 0) {
+    const botCountToAdd = table.botCount || 0;
+
+    for (let i = 1; i <= botCountToAdd; i++) {
+      const newBot = await generateBot(table.limit);
+
+      players[newBot.socketId] = new Player(newBot.socketId, newBot.userId, newBot.name, newBot.chipsAmount, newBot.isBot);
+      tables[table.id].addPlayer(players[newBot.socketId]);
+    }
+  }
+
+  mainSocket && mainSocket.broadcast.emit(TABLES_UPDATED, getCurrentTables());
+
+  let seatId = 0;
+  for (const player of tables[table.id].players) {
+    //Sit Down
+    seatId = seatId + 1;
+    const amount = tables[table.id].limit; //get from db table
+    tables[table.id].sitPlayer(player, seatId, amount);
+
+    if (mainSocket) {
+      let message = `${player.name} sat down in Seat ${seatId}`;
+      // updatePlayerBankroll(player, -amount);
+      console.log(message);
+      broadcastToTable(tables[table.id], message);
+    }
+    if (tables[table.id].activePlayers().length === 2) {
+      initNewHand(tables[table.id]);
+    }
+
+    // Create a custom setter for the `turn` property
+    Object.defineProperty(tables[table.id].seats[seatId], 'turn', {
+      set: function (value) {
+        if (value === true && !this._turnHandled) {
+          this._turnHandled = true;
+          handleChange(tables[table.id], this.id);
+        } else {
+          this._turnHandled = false;
+        }
+        this._turn = value;
+      },
+      get: function () {
+        return this._turn;
+      },
+    });
+  }
+}
+
+function hasHumanPlayer(table) {
+  return table.players.find((player) => !player.isBot) != null
+}
+
+async function initTables() {
+  console.log('**********************************')
+  console.log('**********************************')
+  console.log('**********************************')
+  for(const table of Object.values(tables)) {
+    if(table.players.length && !hasHumanPlayer(table)) {
+      tables[table.id] = null
+      const newTable = {
+        id: table.id,
+        limit: table.limit,
+        name: table.name,
+        maxPlayers: table.maxPlayers,
+        botCount: table.botCount,
+        gameType: table.gameType
+      }
+      await createNewTable(table)
+    }
+  }
+}
+
+module.exports = { init, initTables };
