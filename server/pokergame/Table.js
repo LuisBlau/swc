@@ -68,8 +68,9 @@ class Table {
   rebuyPlayer(seatId, amount) {
     if (!this.seats[seatId]) {
       console.log('rebuyPlayer: No seated player to rebuy');
+    } else {
+      this.seats[seatId].stack += amount;
     }
-    this.seats[seatId].stack += amount;
   }
 
   standPlayer(socketId) {
@@ -218,6 +219,27 @@ class Table {
         seat.sittingOut = true;
       }
     }
+  }
+  getSeatsCount() {
+    let res = 0;
+    for (let i of Object.keys(this.seats)) {
+      const seat = this.seats[i];
+      if(seat) {
+        res += 1;
+      }
+    }
+    return res;
+  }
+  findEmptySeat() {
+    let res = -1;
+    for (let i of Object.keys(this.seats)) {
+      const seat = this.seats[i];
+      if(!seat) {
+        res = i;
+        break;
+      }
+    }
+    return res;
   }
   endWithoutShowdown() {
     const winner = this.unfoldedPlayers()[0];
