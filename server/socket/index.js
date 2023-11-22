@@ -173,7 +173,7 @@ function initNewHand(table) {
     console.log('---New hand starting.')
   }
   setTimeout(() => {
-    table.clearWinMessages();
+        table.clearWinMessages();
     table.startHand();
     broadcastToTable(table, 'New hand started.');
   }, 4000);
@@ -636,24 +636,45 @@ const init = (socket, io) => {
     console.log('CHECK')
     let table = tables[tableId];
     let res = table.handleCheck(socket.id);
-    res && broadcastToTable(table, res.message);
-    res && changeTurnAndBroadcast(table, res.seatId);
+    if(res) {
+      broadcastToTable(table, res.message);
+      changeTurnAndBroadcast(table, res.seatId);
+    } else {
+      broadcastToTable(table, "Unable to raise. Consider as fold.")
+      let res = table.handleFold(socket.id);
+      res && broadcastToTable(table, res.message);
+      res && changeTurnAndBroadcast(table, res.seatId);
+    }
   });
 
   socket.on(CALL, (tableId) => {
     console.log('CALL')
     let table = tables[tableId];
     let res = table.handleCall(socket.id);
-    res && broadcastToTable(table, res.message);
-    res && changeTurnAndBroadcast(table, res.seatId);
+    if(res) {
+      broadcastToTable(table, res.message);
+      changeTurnAndBroadcast(table, res.seatId);
+    } else {
+      broadcastToTable(table, "Unable to raise. Consider as fold.")
+      let res = table.handleFold(socket.id);
+      res && broadcastToTable(table, res.message);
+      res && changeTurnAndBroadcast(table, res.seatId);
+    }
   });
 
   socket.on(RAISE, ({ tableId, amount }) => {
     console.log('RAISE')
     let table = tables[tableId];
     let res = table.handleRaise(socket.id, amount);
-    res && broadcastToTable(table, res.message);
-    res && changeTurnAndBroadcast(table, res.seatId);
+    if(res) {
+      broadcastToTable(table, res.message);
+      changeTurnAndBroadcast(table, res.seatId);
+    } else {
+      broadcastToTable(table, "Unable to raise. Consider as fold.")
+      let res = table.handleFold(socket.id);
+      res && broadcastToTable(table, res.message);
+      res && changeTurnAndBroadcast(table, res.seatId);
+    }
   });
 
   socket.on(TABLE_MESSAGE, ({ message, from, tableId }) => {
