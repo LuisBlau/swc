@@ -179,52 +179,56 @@ function initNewHand(table) {
   }, 4000);
 
   setTimeout(async () => {
-    for(const seat of Object.keys(table.seats)) {
-      const currentPlayer = table.seats[seat]
+    try {
+      for(const seat of Object.keys(table.seats)) {
+        const currentPlayer = table.seats[seat]
 
-      if (currentPlayer && currentPlayer.stack <= 0) {
-        // Busted bot, replace it with a new one
-        console.log('--- handle busted player ---');
-        const newBot = await generateBot(table.limit);
-        const newSeatId = currentPlayer.id;
-    
-        players[newBot.socketId] = new Player(
-          newBot.socketId,
-          newBot.userId,
-          newBot.name,
-          newBot.chipsAmount,
-          true
-        );
-        table.removePlayer(currentPlayer.player.socketId)
-        table.addPlayer(players[newBot.socketId]);
-        table.sitPlayer(players[newBot.socketId], newSeatId, table.limit);
+        if (currentPlayer && currentPlayer.stack <= 0) {
+          // Busted bot, replace it with a new one
+          console.log('--- handle busted player ---');
+          const newBot = await generateBot(table.limit);
+          const newSeatId = currentPlayer.id;
+      
+          players[newBot.socketId] = new Player(
+            newBot.socketId,
+            newBot.userId,
+            newBot.name,
+            newBot.chipsAmount,
+            true
+          );
+          table.removePlayer(currentPlayer.player.socketId)
+          table.addPlayer(players[newBot.socketId]);
+          table.sitPlayer(players[newBot.socketId], newSeatId, table.limit);
 
-        Object.defineProperty(table.seats[newSeatId], 'turn', {
-          set: function (value) {
-            if (value === true && !this._turnHandled) {
-              this._turnHandled = true
-              handleChange(table, this.id);
-            } else {
-              this._turnHandled = false
-            }
-            this._turn = value;
-          },
-          get: function () {
-            return this._turn;
-          },
-        });
-    
-        console.log(`Replaced busted bot with ${newBot.name} for seat ${newSeatId}`);
-    
-        // Inform the table about the replacement
-        const message = `${newBot.name} replaced ${currentPlayer.player.name}`;
-        console.log(message)
-        broadcastToTable(table, message);
-    
-        // Handle the new bot's turn
-        handleBotAction(table, newSeatId, 'FOLD'); // The new bot folds for this round
-        return 'FOLD';
+          Object.defineProperty(table.seats[newSeatId], 'turn', {
+            set: function (value) {
+              if (value === true && !this._turnHandled) {
+                this._turnHandled = true
+                handleChange(table, this.id);
+              } else {
+                this._turnHandled = false
+              }
+              this._turn = value;
+            },
+            get: function () {
+              return this._turn;
+            },
+          });
+      
+          console.log(`Replaced busted bot with ${newBot.name} for seat ${newSeatId}`);
+      
+          // Inform the table about the replacement
+          const message = `${newBot.name} replaced ${currentPlayer.player.name}`;
+          console.log(message)
+          broadcastToTable(table, message);
+      
+          // Handle the new bot's turn
+          handleBotAction(table, newSeatId, 'FOLD'); // The new bot folds for this round
+          return 'FOLD';
+        }
       }
+    } catch (err) {
+      console.log('Error while generating new bot.')
     }
   }, 10000)
 }
@@ -666,12 +670,11 @@ const init = (socket, io) => {
     console.log('RAISE')
     let table = tables[tableId];
     let res = table.handleRaise(socket.id, amount);
-    if(res) {
+    if(!res.error) {
       broadcastToTable(table, res.message);
       changeTurnAndBroadcast(table, res.seatId);
     } else {
-      broadcastToTable(table, "Unable to raise. Consider as fold.")
-      let res = table.handleFold(socket.id);
+      let res = table.handleRaise(socket.id, table.minRaise);
       res && broadcastToTable(table, res.message);
       res && changeTurnAndBroadcast(table, res.seatId);
     }
