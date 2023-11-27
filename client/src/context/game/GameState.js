@@ -77,7 +77,7 @@ const GameState = ({ history, children }) => {
       });
     }
     return () => {
-      if(currentTableRef) {
+      if(currentTableRef && socket) {
         leaveTable();
       }
     };
