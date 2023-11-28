@@ -847,7 +847,7 @@ async function initTables() {
         botCount: table.botCount,
         gameType: table.gameType
       }
-      await createNewTable(table)
+      await createNewTable(newTable)
     }
   }
 }

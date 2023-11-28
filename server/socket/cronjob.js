@@ -11,7 +11,7 @@ const runCrons = () => {
         console.error("Error while running cronjob : ", error)
       }
     },
-    { runOnInit: false }
+    { runOnInit: true }
   )
 }
 
