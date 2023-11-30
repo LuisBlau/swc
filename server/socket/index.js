@@ -159,6 +159,7 @@ function changeTurnAndBroadcast(table, seatId) {
   setTimeout(() => {
     console.log('--- change turn --- ', seatId)
     table.changeTurn(seatId);
+    console.log('--- next turn = ', table.turn)
     broadcastToTable(table);
 
     if (table.handOver) {
@@ -171,10 +172,12 @@ function initNewHand(table) {
   if (table.activePlayers().length > 1) {
     broadcastToTable(table, 'New hand starting.');
     console.log('---New hand starting.')
+    console.time('---New hand started.')
   }
   setTimeout(() => {
-        table.clearWinMessages();
+    table.clearWinMessages();
     table.startHand();
+    console.timeEnd('---New hand started.')
     broadcastToTable(table, 'New hand started.');
   }, 4000);
 
@@ -183,7 +186,7 @@ function initNewHand(table) {
       for(const seat of Object.keys(table.seats)) {
         const currentPlayer = table.seats[seat]
 
-        if (currentPlayer && currentPlayer.stack <= 0) {
+        if (currentPlayer && currentPlayer.stack <= 0 && currentPlayer.player.isBot) {
           // Busted bot, replace it with a new one
           console.log('--- handle busted player ---');
           const newBot = await generateBot(table.limit);
@@ -196,6 +199,7 @@ function initNewHand(table) {
             newBot.chipsAmount,
             true
           );
+          delete players[currentPlayer.player.socketId]
           table.removePlayer(currentPlayer.player.socketId)
           table.addPlayer(players[newBot.socketId]);
           table.sitPlayer(players[newBot.socketId], newSeatId, table.limit);
@@ -434,15 +438,15 @@ function handleBotAction(table, seatId, action) {
       break;
     default:
       // Handle other actions as needed
+      changeTurnAndBroadcast(table, seatId);
       break;
   }
 }
 
 function handleChange(table, seatId) {
-  console.log('handleChange')
-  console.log(`Turn for seat ${seatId} in table ${table.id} changed to true`);
-
   setTimeout(async () => {
+    console.log('handleChange')
+    console.log(`Turn for seat ${seatId} in table ${table.id} changed to true`);
     const currentPlayer = table.seats[seatId].player;
 
     if (currentPlayer.isBot) {
@@ -463,7 +467,7 @@ initializeTables().then(() => {
   for(let tableId of tableArray) {
     const table = tables[tableId]
 
-    mainSocket && mainSocket.emit(TABLE_JOINED, { tables: getCurrentTables(), tableId });
+    // mainSocket && mainSocket.emit(TABLE_JOINED, { tables: getCurrentTables(), tableId });
     mainSocket && mainSocket.broadcast.emit(TABLES_UPDATED, getCurrentTables());
 
     let seatId = 0

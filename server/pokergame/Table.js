@@ -47,9 +47,13 @@ class Table {
   }
 
   removePlayer(socketId) {
-    this.players = this.players.filter(
-      (player) => player && player.socketId !== socketId,
-    );
+    const index = this.players.findIndex((player) => player && player.socketId === socketId)
+    if(index >= 0) {
+      this.players.splice(index, 1)
+    }
+    // this.players = this.players.filter(
+    //   (player) => player && player.socketId !== socketId,
+    // );
     this.standPlayer(socketId);
   }
 
