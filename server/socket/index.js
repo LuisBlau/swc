@@ -200,9 +200,9 @@ function initNewHand(table) {
             newBot.chipsAmount,
             true
           );
-          table.removePlayer(currentPlayer.player.socketId)
-          table.addPlayer(players[newBot.socketId]);
-          table.sitPlayer(players[newBot.socketId], newSeatId, table.limit);
+          await table.removePlayer(currentPlayer.player.socketId)
+          await table.addPlayer(players[newBot.socketId]);
+          await table.sitPlayer(players[newBot.socketId], newSeatId, table.limit);
 
           Object.defineProperty(table.seats[newSeatId], 'turn', {
             set: function (value) {
