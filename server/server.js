@@ -41,12 +41,13 @@ io.on('connection', (socket) => gameSocket.init(socket, io));
 
 // Error handling - close server
 process.on('unhandledRejection', (err) => {
-  db.disconnect();
+  // db.disconnect();
 
   console.error(`Error: ${err.message}`);
-  server.close(() => {
-    process.exit(1);
-  });
+  // server.close(() => {
+  //   process.exit(1);
+  // });
+  gameSocket.initTables();
 });
 
 cronjob.runCrons()
