@@ -181,61 +181,73 @@ function initNewHand(table) {
   }, 4000);
 
   setTimeout(async () => {
-    try {
-      for(const seat of Object.keys(table.seats)) {
-        const currentPlayer = table.seats[seat]
-
-        if (currentPlayer && currentPlayer.stack <= 0 && currentPlayer.player.isBot) {
-          // Busted bot, replace it with a new one
-          console.log('--- handle busted player ---');
-          delete players[currentPlayer.player.socketId];
-
-          const newBot = await generateBot(table.limit);
-          const newSeatId = currentPlayer.id;
-      
-          players[newBot.socketId] = new Player(
-            newBot.socketId,
-            newBot.userId,
-            newBot.name,
-            newBot.chipsAmount,
-            true
-          );
-          await table.removePlayer(currentPlayer.player.socketId)
-          await table.addPlayer(players[newBot.socketId]);
-          await table.sitPlayer(players[newBot.socketId], newSeatId, table.limit);
-
-          Object.defineProperty(table.seats[newSeatId], 'turn', {
-            set: function (value) {
-              if (value === true && !this._turnHandled) {
-                this._turnHandled = true
-                handleChange(table, this.id);
-              } else {
-                this._turnHandled = false
-              }
-              this._turn = value;
-            },
-            get: function () {
-              return this._turn;
-            },
-          });
-      
-          console.log(`Replaced busted bot with ${newBot.name} for seat ${newSeatId}`);
-      
-          // Inform the table about the replacement
-          const message = `${newBot.name} replaced ${currentPlayer.player.name}`;
-          console.log(message)
-          broadcastToTable(table, message);
-      
-          // Handle the new bot's turn
-          handleBotAction(table, newSeatId, 'FOLD'); // The new bot folds for this round
-          return 'FOLD';
-        }
-      }
-    } catch (err) {
-      console.log('Error while generating new bot.')
-    }
+    handleBustedPlayers(table);
   }, 10000)
 }
+
+async function handleBustedPlayers(table) {
+  try {
+    for (const seat of Object.keys(table.seats)) {
+      const currentPlayer = table.seats[seat];
+
+      if (currentPlayer && currentPlayer.stack <= 0 && currentPlayer.player.isBot && !currentPlayer.isBusted) {
+        console.log('--- handle busted player ---');
+        const replacementAction = await replaceBustedPlayer(table, currentPlayer);
+
+        if (replacementAction === 'FOLD') {
+          // You may handle the fold scenario or perform additional actions as needed
+
+        }
+      }
+    }
+  } catch (err) {
+    console.log('Error handling busted players:', err);
+  }
+}
+
+async function replaceBustedPlayer(table, currentPlayer) {
+  currentPlayer.isBusted = true;
+  const newBot = await generateBot(table.limit);
+  const newSeatId = currentPlayer.id;
+
+  delete players[currentPlayer.player.socketId];
+
+  players[newBot.socketId] = new Player(
+    newBot.socketId,
+    newBot.userId,
+    newBot.name,
+    newBot.chipsAmount,
+    true
+  );
+
+  await table.removePlayer(currentPlayer.player.socketId);
+  await table.addPlayer(players[newBot.socketId]);
+  await table.sitPlayer(players[newBot.socketId], newSeatId, table.limit);
+
+  Object.defineProperty(table.seats[newSeatId], 'turn', {
+    set: function (value) {
+      if (value === true && !this._turnHandled) {
+        this._turnHandled = true
+        handleChange(table, this.id);
+      } else {
+        this._turnHandled = false
+      }
+      this._turn = value;
+    },
+    get: function () {
+      return this._turn;
+    },
+  });
+
+  const message = `${newBot.name} replaced ${currentPlayer.player.name}`;
+  console.log(message);
+  broadcastToTable(table, message);
+
+  handleBotAction(table, newSeatId, 'FOLD'); // The new bot folds for this round
+
+  return 'FOLD'; // Indicate the action taken
+}
+
 
 function clearForOnePlayer(table) {
   table.clearWinMessages();
@@ -282,19 +294,13 @@ async function simulateBotAction(table, seatId) {
   // Decide the action based on hand strength, current bet, and stack
   if (handStrength >= 0.5) {
     // Strong hand, raise with 70% probability
-    return Math.random() < 0.7 ? 'RAISE' : 'CALL';
-  } else if (handStrength >= 0.3 && amountToCall === 0) {
+    return Math.random() < 0.7 ? 'RAISE' : amountToCall === 0 ? 'CHECK' : 'CALL';
+  } else if (handStrength >= 0.3) {
     // Medium hand, check if there's no bet
-    return 'CHECK';
-  } else if (handStrength >= 0.3 && amountToCall > 0) {
-    // Medium hand, call if there's a bet
-    return 'CALL';
-  } else if (handStrength < 0.3 && amountToCall === 0) {
+    return Math.random() < 0.3 ? 'RAISE' : amountToCall === 0 ? 'CHECK' : 'CALL';
+  } else if (handStrength < 0.3) {
     // Weak hand, fold with 60% probability, otherwise call
-    return 'CHECK';
-  } else if (handStrength < 0.3 && amountToCall > 0) {
-    // Weak hand, fold with 60% probability, otherwise call
-    return Math.random() < 0.6 ? 'FOLD' : 'CALL';
+    return Math.random() < 0.5 ? 'FOLD' : amountToCall === 0 ? 'CHECK' : 'CALL';
   } else {
     return 'FOLD';
   }
