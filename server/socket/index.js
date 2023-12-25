@@ -159,7 +159,7 @@ function changeTurnAndBroadcast(table, seatId) {
   setTimeout(() => {
     // console.log('--- change turn --- ', seatId)
     table.changeTurn(seatId);
-    // console.log('--- next turn = ', table.turn)
+    console.log('--- next turn = ', table.turn)
     broadcastToTable(table);
 
     if (table.handOver) {
@@ -171,12 +171,12 @@ function changeTurnAndBroadcast(table, seatId) {
 function initNewHand(table) {
   if (table.activePlayers().length > 1) {
     broadcastToTable(table, 'New hand starting.');
-    // console.log('---New hand starting.')
+    console.log('---New hand starting.')
   }
   setTimeout(() => {
     table.clearWinMessages();
     table.startHand();
-    // console.log('---New hand started.')
+    console.log('---New hand started.')
     broadcastToTable(table, 'New hand started.');
   }, 4000);
 
@@ -391,13 +391,8 @@ function evaluateHand(playerHand, communityCards) {
   }
 }
 
-function rankValue(rank) {
-  const values = { '2': 2, '3': 3, '4': 4, '5': 5, '6': 6, '7': 7, '8': 8, '9': 9, '10': 10, 'J': 11, 'Q': 12, 'K': 13, 'A': 14 };
-  return values[rank] || parseInt(rank, 10);
-}
-
 function handleBotAction(table, seatId, action) {
-  // console.log('action = ', action)
+  console.log('action = ', action)
   switch (action) {
     case 'FOLD':
       const foldResult = table.handleFold(table.seats[seatId].player.socketId);
@@ -451,8 +446,8 @@ function handleBotAction(table, seatId, action) {
 
 function handleChange(table, seatId) {
   setTimeout(async () => {
-    // console.log('handleChange')
-    // console.log(`Turn for seat ${seatId} in table ${table.id} changed to true`);
+    console.log('handleChange')
+    console.log(`Turn for seat ${seatId} in table ${table.id} changed to true`);
     const currentPlayer = table.seats[seatId].player;
 
     if (currentPlayer.isBot) {
@@ -858,7 +853,11 @@ async function initTables() {
         botCount: table.botCount,
         gameType: table.gameType
       }
+      try {
       await createNewTable(newTable)
+      } catch(err) {
+        console.log('Error while creating new table : ', err)
+      }
     }
   }
 }
