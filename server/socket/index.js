@@ -168,13 +168,12 @@ function changeTurnAndBroadcast(table, seatId) {
   }, 1000);
 }
 
-let handInProgress = false;
 
 function initNewHand(table) {
-  if(handInProgress) {
+  if(table.handInProgress) {
     return;
   }
-  handInProgress = true;
+  table.handInProgress = true;
   if (table.activePlayers().length > 1) {
     broadcastToTable(table, 'New hand starting.');
     console.log('---New hand starting.')
@@ -184,7 +183,7 @@ function initNewHand(table) {
     await table.startHand();
     console.log('---New hand started.')
     broadcastToTable(table, 'New hand started.');
-    handInProgress = false;
+    table.handInProgress = false;
   }, 4000);
 
   setTimeout(async () => {
