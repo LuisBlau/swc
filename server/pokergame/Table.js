@@ -301,19 +301,25 @@ class Table {
     this.updateHistory();
 
     if (this.unfoldedPlayers().length === 1) {
+      console.log('--- endWithoutShowdown ---')
       this.endWithoutShowdown();
+      this.turn = null;
+      this.handOver = true;
       return;
     }
 
     if (this.actionIsComplete()) {
+      console.log('--- actionIsComplete ---')
       this.numberOfRaises = 0
       this.calculateSidePots();
       while (this.board.length <= 5 && !this.handOver) {
         this.dealNextStreet();
       }
+      this.turn = lastTurn;
     }
 
     if (this.allCheckedOrCalled()) {
+      console.log('--- allCheckedOrCalled ---')
       this.calculateSidePots();
       this.dealNextStreet();
       this.turn = this.handOver
@@ -321,6 +327,12 @@ class Table {
         : this.nextUnfoldedPlayer(this.button, 1);
     } else {
       this.turn = this.nextUnfoldedPlayer(lastTurn, 1);
+      console.log('--- not allCheckedOrCalled ---   ', this.turn)
+    }
+
+    if(this.turn == null) {
+      this.handOver = true;
+      return;
     }
 
     for (let i = 1; i <= this.maxPlayers; i++) {
@@ -361,7 +373,7 @@ class Table {
       (seat) => seat && !seat.folded && seat.stack > 0,
     );
     if (seatsToAct.length === 0) return true;
-    return seatsToAct.length === 1 && seatsToAct[0].lastAction === 'CALL';
+    return seatsToAct.length === 1 && (seatsToAct[0].lastAction === 'CALL' || seatsToAct[0].lastAction === 'CHECK' || seatsToAct[0].lastAction === 'WINNER');
   }
   playersAllInThisTurn() {
     const seats = Object.values(this.seats);

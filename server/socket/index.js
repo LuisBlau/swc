@@ -156,14 +156,14 @@ function broadcastToTable(table, message = null, from = null, ) {
 }
 
 function changeTurnAndBroadcast(table, seatId) {
-  setTimeout(() => {
+  setTimeout(async () => {
     // console.log('--- change turn --- ', seatId)
-    table.changeTurn(seatId);
+    await table.changeTurn(seatId);
     console.log('--- next turn = ', table.turn)
     broadcastToTable(table);
 
     if (table.handOver) {
-      initNewHand(table);
+      await initNewHand(table);
     }
   }, 1000);
 }
@@ -173,9 +173,9 @@ function initNewHand(table) {
     broadcastToTable(table, 'New hand starting.');
     console.log('---New hand starting.')
   }
-  setTimeout(() => {
-    table.clearWinMessages();
-    table.startHand();
+  setTimeout(async () => {
+    await table.clearWinMessages();
+    await table.startHand();
     console.log('---New hand started.')
     broadcastToTable(table, 'New hand started.');
   }, 4000);
@@ -453,7 +453,7 @@ function handleChange(table, seatId) {
     if (currentPlayer.isBot) {
       // Simulate bot actions
       const action = await simulateBotAction(table, seatId);
-      handleBotAction(table, seatId, action);
+      await handleBotAction(table, seatId, action);
     }
   }, 5000);
 }
