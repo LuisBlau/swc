@@ -450,8 +450,16 @@ function handleBotAction(table, seatId, action) {
   }
 }
 
+let timeoutIds = {};
+
 function handleChange(table, seatId) {
-  setTimeout(async () => {
+  if(!timeoutIds[table.id]) {
+    timeoutIds[table.id] = {}
+  }
+  if(timeoutIds[table.id][seatId]) {
+    clearTimeout(timeoutIds[seatId]);
+  }
+  timeoutIds[table.id][seatId] = setTimeout(async () => {
     console.log('handleChange')
     console.log(`Turn for seat ${seatId} in table ${table.id} changed to true`);
     const currentPlayer = table.seats[seatId].player;
@@ -461,6 +469,7 @@ function handleChange(table, seatId) {
       const action = await simulateBotAction(table, seatId);
       await handleBotAction(table, seatId, action);
     }
+    timeoutIds[table.id][seatId] = null;
   }, 5000);
 }
 

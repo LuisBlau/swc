@@ -31,6 +31,7 @@ class Table {
     this.history = [];
     this.botCount = botCount;
     this.handInProgress = false;
+    this.timeoutId = null;
   }
 
   initSeats(maxPlayers) {
