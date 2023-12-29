@@ -156,6 +156,10 @@ function broadcastToTable(table, message = null, from = null, ) {
 }
 
 function changeTurnAndBroadcast(table, seatId) {
+  if(table.turnInProgress) {
+    return;
+  }
+  table.turnInProgress = true;
   setTimeout(async () => {
     // console.log('--- change turn --- ', seatId)
     await table.changeTurn(seatId);
@@ -165,6 +169,7 @@ function changeTurnAndBroadcast(table, seatId) {
     if (table.handOver) {
       await initNewHand(table);
     }
+    table.turnInProgress = false;
   }, 1000);
 }
 
@@ -186,8 +191,13 @@ function initNewHand(table) {
     table.handInProgress = false;
   }, 4000);
 
+  if(table.handleBustedPlayersInProgress) {
+    return;
+  }
+  table.handleBustedPlayersInProgress = true;
   setTimeout(async () => {
-    handleBustedPlayers(table);
+    await handleBustedPlayers(table);
+    table.handleBustedPlayersInProgress = false;
   }, 10000)
 }
 
