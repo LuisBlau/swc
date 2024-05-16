@@ -4,8 +4,6 @@ SwC Poker is a full-stack poker platform built with the MERN-stack, where a user
 
 The server part of the application is a Node- / Express-Backend. The Frontend is a React application. Non Real-Time communication between front- & backend is handled via a REST-API. In-game logic-related communications & chat is handled via web sockets / Socket.io.
 
-You can find the live version of this project [here](https://www.vintagepoker.net/).
-
 ## Technologies Used
 
 ### Frontend:
